@@ -1,6 +1,8 @@
+import 'package:doasan/screens/signup_page.dart';
 import 'package:flutter/material.dart';
 import 'package:doasan/screens/login_page.dart';
-import 'dart:async';
+import 'package:doasan/screens/splash_screen.dart';
+import 'package:doasan/screens/logo_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -13,42 +15,18 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Login Page',
+      title: 'Doasan',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFFFF3737)),
         useMaterial3: true,
       ),
-      home: const SplashScreen(),
-    );
-  }
-}
-
-class SplashScreen extends StatefulWidget {
-  const SplashScreen({Key? key}) : super(key: key);
-
-  @override
-  _SplashScreenState createState() => _SplashScreenState();
-}
-
-class _SplashScreenState extends State<SplashScreen> {
-  @override
-  void initState() {
-    super.initState();
-    Timer(const Duration(seconds: 3), () {
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(
-          builder: (context) => const LoginPage(),
-        ),
-      );
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Center(
-        child: CircularProgressIndicator(),
-      ),
+      initialRoute: '/',
+      routes: {
+        '/': (context) => const SplashScreen(),
+        '/logo': (context) => const LogoPage(),
+        '/login': (context) => const LoginPage(),
+        '/register': (context) => const RegistrationPage(),
+      },
     );
   }
 }

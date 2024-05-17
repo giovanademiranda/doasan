@@ -119,6 +119,7 @@ class LoginPage extends StatelessWidget {
                           fontSize: 24,
                           fontFamily: 'Lexend',
                           fontWeight: FontWeight.w400,
+                          color: Colors.white
                         ),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(5),
@@ -133,9 +134,9 @@ class LoginPage extends StatelessWidget {
             ),
             const SizedBox(height: 20),
             Center(
-              child: TextButton(
+              child: ElevatedButton(
                 onPressed: () {
-                  // Ação do botão "Crie uma conta!"
+                  Navigator.of(context).pushNamed('/register');
                 },
                 child: const Text(
                   'Crie uma conta!',
