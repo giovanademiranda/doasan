@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class LoginPage extends StatelessWidget {
@@ -21,7 +20,8 @@ class LoginPage extends StatelessWidget {
                 ),
               ),
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 50),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 30, vertical: 50),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: const [
@@ -119,12 +119,12 @@ class LoginPage extends StatelessWidget {
                           fontSize: 24,
                           fontFamily: 'Lexend',
                           fontWeight: FontWeight.w400,
-                          color: Colors.white
+                          color: Colors.white,
                         ),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(5),
                         ),
-                        minimumSize: const Size.fromHeight(61), // Mantém a mesma altura do input
+                        minimumSize: const Size.fromHeight(61),
                       ),
                       child: const Text('Entrar'),
                     ),

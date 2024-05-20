@@ -1,8 +1,8 @@
-import 'package:doasan/screens/signup_page.dart';
-import 'package:flutter/material.dart';
 import 'package:doasan/screens/login_page.dart';
-import 'package:doasan/screens/splash_screen.dart';
 import 'package:doasan/screens/logo_page.dart';
+import 'package:doasan/screens/signup_page.dart';
+import 'package:doasan/screens/splash_screen.dart';
+import 'package:flutter/material.dart';
 
 void main() {
   runApp(const MyApp());
@@ -25,7 +25,7 @@ class MyApp extends StatelessWidget {
         '/': (context) => const SplashScreen(),
         '/logo': (context) => const LogoPage(),
         '/login': (context) => const LoginPage(),
-        '/register': (context) => const RegistrationPage(),
+        '/register': (context) => const SignupPage(),
       },
     );
   }
