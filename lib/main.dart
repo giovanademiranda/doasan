@@ -1,7 +1,7 @@
-import 'package:doasan/screens/login_page.dart';
-import 'package:doasan/screens/logo_page.dart';
-import 'package:doasan/screens/signup_page.dart';
-import 'package:doasan/screens/splash_screen.dart';
+import 'package:doasan/pages/login_page.dart';
+import 'package:doasan/pages/logo_page.dart';
+import 'package:doasan/pages/signup_page.dart';
+import 'package:doasan/pages/splash_screen.dart';
 import 'package:flutter/material.dart';
 
 void main() {

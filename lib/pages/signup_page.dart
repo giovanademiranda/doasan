@@ -14,6 +14,8 @@ class _SignupPageState extends State<SignupPage> {
     GlobalKey<FormState>()
   ];
 
+  String _selectedBloodType = '';
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,33 +37,36 @@ class _SignupPageState extends State<SignupPage> {
                     const EdgeInsets.symmetric(horizontal: 30, vertical: 50),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: const [
+                  children: [
                     Text(
                       'Registe-se para uma nova conta',
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 20,
-                        fontFamily: 'Lexend',
+                        fontFamily:
+                            'Lexend', // Remova isso se não estiver usando uma fonte personalizada
                         fontWeight: FontWeight.w400,
                       ),
                     ),
-                    SizedBox(height: 10),
+                    const SizedBox(height: 10),
                     Text(
                       'Crie uma Conta',
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 35,
-                        fontFamily: 'Lexend',
+                        fontFamily:
+                            'Lexend', // Remova isso se não estiver usando uma fonte personalizada
                         fontWeight: FontWeight.w400,
                       ),
                     ),
-                    SizedBox(height: 10),
+                    const SizedBox(height: 10),
                     Text(
                       'Insira os detalhes da sua conta',
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 20,
-                        fontFamily: 'Lexend',
+                        fontFamily:
+                            'Lexend', // Remova isso se não estiver usando uma fonte personalizada
                         fontWeight: FontWeight.w400,
                       ),
                     ),
@@ -87,40 +92,55 @@ class _SignupPageState extends State<SignupPage> {
           children: [
             _buildStepIndicator('Passo 1/2'),
             const SizedBox(height: 16.0),
-            const Text(
+            Text(
               'Nome Completo',
-              style: TextStyle(fontSize: 20.0),
+              style: TextStyle(
+                  fontSize: 20.0,
+                  fontFamily:
+                      'Lexend'), // Remova isso se não estiver usando uma fonte personalizada
             ),
             const SizedBox(height: 8.0),
             _buildTextField('John Doe'),
             const SizedBox(height: 16.0),
-            const Text(
+            Text(
               'Email',
-              style: TextStyle(fontSize: 20.0),
+              style: TextStyle(
+                  fontSize: 20.0,
+                  fontFamily:
+                      'Lexend'), // Remova isso se não estiver usando uma fonte personalizada
             ),
             const SizedBox(height: 8.0),
             _buildTextField('example@gmail.com'),
             const SizedBox(height: 16.0),
-            const Text(
+            Text(
               'Telefone',
-              style: TextStyle(fontSize: 20.0),
+              style: TextStyle(
+                  fontSize: 20.0,
+                  fontFamily:
+                      'Lexend'), // Remova isso se não estiver usando uma fonte personalizada
             ),
             const SizedBox(height: 8.0),
             _buildTextField('(15) 9 9999-9999'),
             const SizedBox(height: 16.0),
-            const Text(
+            Text(
               'Endereço',
-              style: TextStyle(fontSize: 20.0),
+              style: TextStyle(
+                  fontSize: 20.0,
+                  fontFamily:
+                      'Lexend'), // Remova isso se não estiver usando uma fonte personalizada
             ),
             const SizedBox(height: 8.0),
             _buildTextField('Rua: example doe 123'),
             const SizedBox(height: 16.0),
-            const Text(
+            Text(
               'Senha',
-              style: TextStyle(fontSize: 20.0),
+              style: TextStyle(
+                  fontSize: 20.0,
+                  fontFamily:
+                      'Lexend'), // Remova isso se não estiver usando uma fonte personalizada
             ),
             const SizedBox(height: 8.0),
-            _buildTextField('password', obscureText: true),
+            _buildTextField('Digite sua senha', obscureText: true),
             const SizedBox(height: 24.0),
             ElevatedButton(
               onPressed: () {
@@ -131,19 +151,20 @@ class _SignupPageState extends State<SignupPage> {
                 }
               },
               style: ElevatedButton.styleFrom(
+                foregroundColor: Colors.white,
                 backgroundColor: const Color(0xFFFF3737),
                 padding: const EdgeInsets.symmetric(vertical: 15),
-                textStyle: const TextStyle(
+                textStyle: TextStyle(
                   fontSize: 24,
-                  fontFamily: 'Lexend',
+                  fontFamily:
+                      'Lexend', // Remova isso se não estiver usando uma fonte personalizada
                   fontWeight: FontWeight.w400,
                   color: Colors.white,
                 ),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(5),
                 ),
-                minimumSize:
-                    const Size.fromHeight(61), // Mantém a mesma altura do input
+                minimumSize: const Size.fromHeight(61),
               ),
               child: const Text('Continuar'),
             ),
@@ -151,14 +172,15 @@ class _SignupPageState extends State<SignupPage> {
             Center(
               child: TextButton(
                 onPressed: () {
-                  // Ação do botão "Login"
+                  Navigator.of(context).pushReplacementNamed('/login');
                 },
-                child: const Text(
+                child: Text(
                   'Você já tem uma conta? Login',
                   style: TextStyle(
-                    color: Color(0xFFFF3737),
+                    color: Colors.black,
                     fontSize: 20,
-                    fontFamily: 'Lexend',
+                    fontFamily:
+                        'Lexend', // Remova isso se não estiver usando uma fonte personalizada
                     fontWeight: FontWeight.w400,
                     decoration: TextDecoration.underline,
                   ),
@@ -194,9 +216,12 @@ class _SignupPageState extends State<SignupPage> {
               ],
             ),
             const SizedBox(height: 16.0),
-            const Text(
+            Text(
               'Grupo de Sangue*',
-              style: TextStyle(fontSize: 20.0),
+              style: TextStyle(
+                  fontSize: 20.0,
+                  fontFamily:
+                      'Lexend'), // Remova isso se não estiver usando uma fonte personalizada
             ),
             const SizedBox(height: 8.0),
             Wrap(
@@ -205,29 +230,43 @@ class _SignupPageState extends State<SignupPage> {
               children: ['A+', 'O+', 'B+', 'AB+', 'A-', 'O-', 'B-', 'AB-']
                   .map((bloodType) => ChoiceChip(
                         label: Text(bloodType),
-                        selected: false,
-                        onSelected: (bool selected) {},
+                        selected: _selectedBloodType == bloodType,
+                        onSelected: (bool selected) {
+                          setState(() {
+                            _selectedBloodType = selected ? bloodType : '';
+                          });
+                        },
+                        selectedColor: Colors.red,
                       ))
                   .toList(),
             ),
             const SizedBox(height: 16.0),
-            const Text(
+            Text(
               'Data de Nascimento',
-              style: TextStyle(fontSize: 20.0),
+              style: TextStyle(
+                  fontSize: 20.0,
+                  fontFamily:
+                      'Lexend'), // Remova isso se não estiver usando uma fonte personalizada
             ),
             const SizedBox(height: 8.0),
             _buildTextField('01/01/2000', icon: Icons.calendar_today),
             const SizedBox(height: 16.0),
-            const Text(
+            Text(
               'Peso',
-              style: TextStyle(fontSize: 20.0),
+              style: TextStyle(
+                  fontSize: 20.0,
+                  fontFamily:
+                      'Lexend'), // Remova isso se não estiver usando uma fonte personalizada
             ),
             const SizedBox(height: 8.0),
             _buildTextField('65', suffixText: 'KG'),
             const SizedBox(height: 16.0),
-            const Text(
+            Text(
               'Histórico médico',
-              style: TextStyle(fontSize: 20.0),
+              style: TextStyle(
+                  fontSize: 20.0,
+                  fontFamily:
+                      'Lexend'), // Remova isso se não estiver usando uma fonte personalizada
             ),
             const SizedBox(height: 8.0),
             _buildTextField(
@@ -242,11 +281,13 @@ class _SignupPageState extends State<SignupPage> {
                 }
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFFFF3737),
+                foregroundColor: Colors.white,
+                backgroundColor: const Color(0xFFFF3737), // Cor do texto
                 padding: const EdgeInsets.symmetric(vertical: 15),
-                textStyle: const TextStyle(
+                textStyle: TextStyle(
                   fontSize: 24,
-                  fontFamily: 'Lexend',
+                  fontFamily:
+                      'Lexend', // Remova isso se não estiver usando uma fonte personalizada
                   fontWeight: FontWeight.w400,
                   color: Colors.white,
                 ),
@@ -299,10 +340,11 @@ class _SignupPageState extends State<SignupPage> {
       child: Center(
         child: Text(
           text,
-          style: const TextStyle(
+          style: TextStyle(
             color: Colors.white,
             fontSize: 20,
-            fontFamily: 'Lexend',
+            fontFamily:
+                'Lexend', // Remova isso se não estiver usando uma fonte personalizada
             fontWeight: FontWeight.w400,
           ),
         ),
