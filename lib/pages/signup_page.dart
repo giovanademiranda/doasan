@@ -1,7 +1,14 @@
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_masked_text2/flutter_masked_text2.dart';
+import 'package:intl/intl.dart';
+
+import '../widgets/custom_choice_chip.dart';
+import '../widgets/custom_text_field.dart';
+import '../widgets/step_indicator.dart';
 
 class SignupPage extends StatefulWidget {
-  const SignupPage({Key? key}) : super(key: key);
+  const SignupPage({super.key});
 
   @override
   _SignupPageState createState() => _SignupPageState();
@@ -14,7 +21,107 @@ class _SignupPageState extends State<SignupPage> {
     GlobalKey<FormState>()
   ];
 
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final MaskedTextController _phoneController =
+      MaskedTextController(mask: '(00) 0 0000-0000');
+  final TextEditingController _addressController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final MaskedTextController _birthDateController =
+      MaskedTextController(mask: '00/00/0000');
+  final MaskedTextController _weightController =
+      MaskedTextController(mask: '000');
+
+  final TextEditingController _medicalHistoryController =
+      TextEditingController();
+
   String _selectedBloodType = '';
+
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(1900),
+      lastDate: DateTime.now(),
+      locale: const Locale('pt', 'BR'),
+    );
+    if (picked != null) {
+      setState(() {
+        _birthDateController.text = DateFormat('dd/MM/yyyy').format(picked);
+      });
+    }
+  }
+
+  String? _validateDateOfBirth(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Por favor, insira sua data de nascimento';
+    }
+
+    try {
+      final DateFormat dateFormat = DateFormat('dd/MM/yyyy');
+      final DateTime dateOfBirth = dateFormat.parseStrict(value);
+
+      final DateTime now = DateTime.now();
+      final DateTime minimumDate = DateTime(1900);
+      final DateTime today = DateTime(now.year, now.month, now.day);
+      final DateTime adultDate = DateTime(now.year - 18, now.month, now.day);
+
+      if (dateOfBirth.isBefore(minimumDate)) {
+        return 'Data de nascimento não pode ser antes de 1900';
+      } else if (dateOfBirth.isAtSameMomentAs(today)) {
+        return 'Data de nascimento não pode ser o dia de hoje';
+      } else if (dateOfBirth.isAfter(adultDate)) {
+        return 'Você deve ter pelo menos 18 anos';
+      }
+    } catch (e) {
+      return 'Por favor, insira uma data válida';
+    }
+
+    return null;
+  }
+
+  Future<void> _registerUser() async {
+    await Future.delayed(const Duration(seconds: 2));
+    bool apiConnected = false;
+
+    if (apiConnected) {
+    } else {
+      AwesomeDialog(
+        context: context,
+        dialogType: DialogType.error,
+        animType: AnimType.topSlide,
+        title: 'Erro',
+        desc: 'Sem resposta da API, não foi possível finalizar o Cadastro!',
+        btnOkOnPress: () {},
+        btnOkColor: Colors.red,
+      ).show();
+    }
+  }
+
+  String? _validateBloodType() {
+    if (_selectedBloodType.isEmpty) {
+      return 'Por favor, selecione um grupo sanguíneo';
+    }
+    return null;
+  }
+
+  void _onSubmit() {
+    if (_formKeys[1].currentState?.validate() ?? false) {
+      if (_validateBloodType() == null) {
+        _registerUser();
+      } else {
+        AwesomeDialog(
+          context: context,
+          dialogType: DialogType.warning,
+          animType: AnimType.topSlide,
+          title: 'Atenção',
+          desc: 'Por favor, selecione um grupo sanguíneo',
+          btnOkOnPress: () {},
+          btnOkColor: Colors.red,
+        ).show();
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,9 +139,8 @@ class _SignupPageState extends State<SignupPage> {
                   bottomRight: Radius.circular(50),
                 ),
               ),
-              child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 30, vertical: 50),
+              child: const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 30, vertical: 50),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -43,30 +149,24 @@ class _SignupPageState extends State<SignupPage> {
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 20,
-                        fontFamily:
-                            'Lexend', // Remova isso se não estiver usando uma fonte personalizada
                         fontWeight: FontWeight.w400,
                       ),
                     ),
-                    const SizedBox(height: 10),
+                    SizedBox(height: 10),
                     Text(
                       'Crie uma Conta',
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 35,
-                        fontFamily:
-                            'Lexend', // Remova isso se não estiver usando uma fonte personalizada
                         fontWeight: FontWeight.w400,
                       ),
                     ),
-                    const SizedBox(height: 10),
+                    SizedBox(height: 10),
                     Text(
                       'Insira os detalhes da sua conta',
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 20,
-                        fontFamily:
-                            'Lexend', // Remova isso se não estiver usando uma fonte personalizada
                         fontWeight: FontWeight.w400,
                       ),
                     ),
@@ -90,57 +190,96 @@ class _SignupPageState extends State<SignupPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            _buildStepIndicator('Passo 1/2'),
+            const StepIndicator(text: 'Passo 1/2'),
             const SizedBox(height: 16.0),
-            Text(
+            const Text(
               'Nome Completo',
-              style: TextStyle(
-                  fontSize: 20.0,
-                  fontFamily:
-                      'Lexend'), // Remova isso se não estiver usando uma fonte personalizada
+              style: TextStyle(fontSize: 20.0),
             ),
             const SizedBox(height: 8.0),
-            _buildTextField('John Doe'),
+            CustomTextField(
+              hintText: 'John Doe',
+              controller: _nameController,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Por favor, insira seu nome completo';
+                }
+                return null;
+              },
+            ),
             const SizedBox(height: 16.0),
-            Text(
+            const Text(
               'Email',
-              style: TextStyle(
-                  fontSize: 20.0,
-                  fontFamily:
-                      'Lexend'), // Remova isso se não estiver usando uma fonte personalizada
+              style: TextStyle(fontSize: 20.0),
             ),
             const SizedBox(height: 8.0),
-            _buildTextField('example@gmail.com'),
+            CustomTextField(
+              hintText: 'example@gmail.com',
+              controller: _emailController,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Por favor, insira seu e-mail';
+                }
+                final emailRegex = RegExp(r'^[^@]+@[^@]+\.[^@]+');
+                if (!emailRegex.hasMatch(value)) {
+                  return 'Por favor, insira um e-mail válido';
+                }
+                return null;
+              },
+            ),
             const SizedBox(height: 16.0),
-            Text(
+            const Text(
               'Telefone',
-              style: TextStyle(
-                  fontSize: 20.0,
-                  fontFamily:
-                      'Lexend'), // Remova isso se não estiver usando uma fonte personalizada
+              style: TextStyle(fontSize: 20.0),
             ),
             const SizedBox(height: 8.0),
-            _buildTextField('(15) 9 9999-9999'),
+            CustomTextField(
+              hintText: '(15) 9 9999-9999',
+              controller: _phoneController,
+              keyboardType: TextInputType.number,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Por favor, insira seu telefone';
+                }
+                if (value.length != 16) {
+                  return 'Por favor, insira um telefone válido';
+                }
+                return null;
+              },
+            ),
             const SizedBox(height: 16.0),
-            Text(
+            const Text(
               'Endereço',
-              style: TextStyle(
-                  fontSize: 20.0,
-                  fontFamily:
-                      'Lexend'), // Remova isso se não estiver usando uma fonte personalizada
+              style: TextStyle(fontSize: 20.0),
             ),
             const SizedBox(height: 8.0),
-            _buildTextField('Rua: example doe 123'),
+            CustomTextField(
+              hintText: 'Rua: example doe 123',
+              controller: _addressController,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Por favor, insira seu endereço';
+                }
+                return null;
+              },
+            ),
             const SizedBox(height: 16.0),
-            Text(
+            const Text(
               'Senha',
-              style: TextStyle(
-                  fontSize: 20.0,
-                  fontFamily:
-                      'Lexend'), // Remova isso se não estiver usando uma fonte personalizada
+              style: TextStyle(fontSize: 20.0),
             ),
             const SizedBox(height: 8.0),
-            _buildTextField('Digite sua senha', obscureText: true),
+            CustomTextField(
+              hintText: 'Digite sua senha',
+              obscureText: true,
+              controller: _passwordController,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Por favor, insira sua senha';
+                }
+                return null;
+              },
+            ),
             const SizedBox(height: 24.0),
             ElevatedButton(
               onPressed: () {
@@ -154,10 +293,8 @@ class _SignupPageState extends State<SignupPage> {
                 foregroundColor: Colors.white,
                 backgroundColor: const Color(0xFFFF3737),
                 padding: const EdgeInsets.symmetric(vertical: 15),
-                textStyle: TextStyle(
+                textStyle: const TextStyle(
                   fontSize: 24,
-                  fontFamily:
-                      'Lexend', // Remova isso se não estiver usando uma fonte personalizada
                   fontWeight: FontWeight.w400,
                   color: Colors.white,
                 ),
@@ -174,13 +311,11 @@ class _SignupPageState extends State<SignupPage> {
                 onPressed: () {
                   Navigator.of(context).pushReplacementNamed('/login');
                 },
-                child: Text(
+                child: const Text(
                   'Você já tem uma conta? Login',
                   style: TextStyle(
                     color: Colors.black,
                     fontSize: 20,
-                    fontFamily:
-                        'Lexend', // Remova isso se não estiver usando uma fonte personalizada
                     fontWeight: FontWeight.w400,
                     decoration: TextDecoration.underline,
                   ),
@@ -212,82 +347,115 @@ class _SignupPageState extends State<SignupPage> {
                   },
                 ),
                 const Spacer(),
-                _buildStepIndicator('Passo 2/2'),
+                const StepIndicator(text: 'Passo 2/2'),
               ],
             ),
             const SizedBox(height: 16.0),
-            Text(
-              'Grupo de Sangue*',
-              style: TextStyle(
-                  fontSize: 20.0,
-                  fontFamily:
-                      'Lexend'), // Remova isso se não estiver usando uma fonte personalizada
+            const Row(
+              children: [
+                Icon(Icons.bloodtype, color: Colors.red, size: 24.0),
+                SizedBox(width: 8.0),
+                Text(
+                  'Grupo Sanguíneo',
+                  style: TextStyle(fontSize: 20.0),
+                ),
+              ],
             ),
             const SizedBox(height: 8.0),
             Wrap(
               spacing: 8.0,
               runSpacing: 8.0,
               children: ['A+', 'O+', 'B+', 'AB+', 'A-', 'O-', 'B-', 'AB-']
-                  .map((bloodType) => ChoiceChip(
-                        label: Text(bloodType),
-                        selected: _selectedBloodType == bloodType,
+                  .map((bloodType) => CustomChoiceChip(
+                        label: bloodType,
+                        isSelected: _selectedBloodType == bloodType,
                         onSelected: (bool selected) {
                           setState(() {
                             _selectedBloodType = selected ? bloodType : '';
                           });
                         },
-                        selectedColor: Colors.red,
                       ))
                   .toList(),
             ),
             const SizedBox(height: 16.0),
-            Text(
-              'Data de Nascimento',
-              style: TextStyle(
-                  fontSize: 20.0,
-                  fontFamily:
-                      'Lexend'), // Remova isso se não estiver usando uma fonte personalizada
+            const Row(
+              children: [
+                Icon(Icons.person, color: Colors.red, size: 24.0),
+                SizedBox(width: 8.0),
+                Text(
+                  'Data de Nascimento',
+                  style: TextStyle(fontSize: 20.0),
+                ),
+              ],
             ),
             const SizedBox(height: 8.0),
-            _buildTextField('01/01/2000', icon: Icons.calendar_today),
+            InkWell(
+              onTap: () => _selectDate(context),
+              child: IgnorePointer(
+                child: CustomTextField(
+                  hintText: '01/01/2000',
+                  icon: Icons.calendar_today,
+                  controller: _birthDateController,
+                  validator: _validateDateOfBirth,
+                ),
+              ),
+            ),
             const SizedBox(height: 16.0),
-            Text(
-              'Peso',
-              style: TextStyle(
-                  fontSize: 20.0,
-                  fontFamily:
-                      'Lexend'), // Remova isso se não estiver usando uma fonte personalizada
+            const Row(
+              children: [
+                Icon(Icons.person, color: Colors.red, size: 24.0),
+                SizedBox(width: 8.0),
+                Text(
+                  'Peso',
+                  style: TextStyle(fontSize: 20.0),
+                ),
+              ],
             ),
             const SizedBox(height: 8.0),
-            _buildTextField('65', suffixText: 'KG'),
+            CustomTextField(
+              hintText: '65',
+              suffixText: 'KG',
+              controller: _weightController,
+              keyboardType: TextInputType.number,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Por favor, insira seu peso';
+                }
+                final weight = int.tryParse(value) ?? 0;
+                if (weight > 200) {
+                  return 'O Peso deve ser no máximo 200KG';
+                } else if (weight < 50) {
+                  return 'O peso minimo é 50KG';
+                }
+                return null;
+              },
+            ),
             const SizedBox(height: 16.0),
-            Text(
+            const Text(
               'Histórico médico',
-              style: TextStyle(
-                  fontSize: 20.0,
-                  fontFamily:
-                      'Lexend'), // Remova isso se não estiver usando uma fonte personalizada
+              style: TextStyle(fontSize: 20.0),
             ),
             const SizedBox(height: 8.0),
-            _buildTextField(
-              'Descreva suas condições médicas...',
+            CustomTextField(
+              hintText: 'Descreva suas condições médicas...',
               maxLines: 3,
+              controller: _medicalHistoryController,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Por favor, insira seu histórico médico';
+                }
+                return null;
+              },
             ),
             const SizedBox(height: 24.0),
             ElevatedButton(
-              onPressed: () {
-                if (_formKeys[1].currentState?.validate() ?? false) {
-                  // Lógica para salvar os dados ou navegar para outra página
-                }
-              },
+              onPressed: _onSubmit,
               style: ElevatedButton.styleFrom(
                 foregroundColor: Colors.white,
-                backgroundColor: const Color(0xFFFF3737), // Cor do texto
+                backgroundColor: const Color(0xFFFF3737),
                 padding: const EdgeInsets.symmetric(vertical: 15),
-                textStyle: TextStyle(
+                textStyle: const TextStyle(
                   fontSize: 24,
-                  fontFamily:
-                      'Lexend', // Remova isso se não estiver usando uma fonte personalizada
                   fontWeight: FontWeight.w400,
                   color: Colors.white,
                 ),
@@ -299,54 +467,6 @@ class _SignupPageState extends State<SignupPage> {
               child: const Text('Feito'),
             ),
           ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildTextField(String hintText,
-      {bool obscureText = false,
-      IconData? icon,
-      int maxLines = 1,
-      String? suffixText}) {
-    return Container(
-      width: double.infinity,
-      decoration: BoxDecoration(
-        color: const Color(0xFFD9D9D9),
-        borderRadius: BorderRadius.circular(5),
-      ),
-      child: TextField(
-        obscureText: obscureText,
-        maxLines: maxLines,
-        decoration: InputDecoration(
-          border: InputBorder.none,
-          contentPadding: const EdgeInsets.all(16),
-          hintText: hintText,
-          hintStyle: const TextStyle(color: Colors.grey),
-          suffixIcon: icon != null ? Icon(icon) : null,
-          suffixText: suffixText,
-        ),
-      ),
-    );
-  }
-
-  Widget _buildStepIndicator(String text) {
-    return Container(
-      padding: const EdgeInsets.all(8),
-      decoration: ShapeDecoration(
-        color: const Color(0xFF333333),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-      ),
-      child: Center(
-        child: Text(
-          text,
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 20,
-            fontFamily:
-                'Lexend', // Remova isso se não estiver usando uma fonte personalizada
-            fontWeight: FontWeight.w400,
-          ),
         ),
       ),
     );

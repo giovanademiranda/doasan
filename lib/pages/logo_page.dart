@@ -1,5 +1,6 @@
-import 'package:flutter/material.dart';
 import 'dart:async';
+
+import 'package:flutter/material.dart';
 
 class LogoPage extends StatefulWidget {
   const LogoPage({Key? key}) : super(key: key);
@@ -20,7 +21,7 @@ class _LogoPageState extends State<LogoPage> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    final double fontSize = size.width * 0.1; // 10% da largura da tela
+    final double fontSize = size.width * 0.1;
 
     return Scaffold(
       body: Container(
@@ -39,11 +40,12 @@ class _LogoPageState extends State<LogoPage> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Container(
-                        width: size.width * 0.23, // 23% da largura da tela
-                        height: size.width * 0.23, // 23% da largura da tela
+                        width: size.width * 0.23,
+                        height: size.width * 0.23,
                         decoration: const BoxDecoration(
                           image: DecorationImage(
-                            image: NetworkImage("https://cdn-icons-png.flaticon.com/512/2679/2679284.png"),
+                            image: NetworkImage(
+                                "https://cdn-icons-png.flaticon.com/512/2679/2679284.png"),
                             fit: BoxFit.fill,
                           ),
                         ),
