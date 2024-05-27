@@ -1,3 +1,4 @@
+import 'package:doasan/pages/home_page.dart';
 import 'package:doasan/pages/login_page.dart';
 import 'package:doasan/pages/logo_page.dart';
 import 'package:doasan/pages/signup_page.dart';
@@ -37,6 +38,7 @@ class MyApp extends StatelessWidget {
         '/logo': (context) => const LogoPage(),
         '/login': (context) => const LoginPage(),
         '/cadastro': (context) => const SignupPage(),
+        '/home': (context) => const HomePage(),
       },
     );
   }

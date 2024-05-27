@@ -17,16 +17,20 @@ class _LoginPageState extends State<LoginPage> {
 
   Future<void> _loginValidate() async {
     await Future.delayed(const Duration(seconds: 2));
-    bool apiConnected = false;
 
-    if (apiConnected) {
+    const mockEmail = 'admin@email.com';
+    const mockPassword = 'admin123';
+
+    if (_emailController.text == mockEmail &&
+        _passwordController.text == mockPassword) {
+      Navigator.of(context).pushReplacementNamed('/home');
     } else {
       AwesomeDialog(
         context: context,
         dialogType: DialogType.error,
         animType: AnimType.topSlide,
         title: 'Erro',
-        desc: 'Sem resposta da API, não foi possível finalizar o Login!',
+        desc: 'Credenciais inválidas. Por favor, tente novamente.',
         btnOkOnPress: () {},
         btnOkColor: Colors.red,
       ).show();
