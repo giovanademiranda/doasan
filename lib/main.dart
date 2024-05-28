@@ -1,3 +1,5 @@
+import 'package:doasan/pages/admin_home_page.dart';
+import 'package:doasan/pages/campaign_form_page.dart';
 import 'package:doasan/pages/home_page.dart';
 import 'package:doasan/pages/login_page.dart';
 import 'package:doasan/pages/logo_page.dart';
@@ -39,6 +41,8 @@ class MyApp extends StatelessWidget {
         '/login': (context) => const LoginPage(),
         '/cadastro': (context) => const SignupPage(),
         '/home': (context) => const HomePage(),
+        '/admin_home': (context) => const AdminHomePage(),
+        '/campanha': (context) => const CampaignFormPage(),
       },
     );
   }
