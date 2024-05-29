@@ -18,12 +18,19 @@ class _LoginPageState extends State<LoginPage> {
   Future<void> _loginValidate() async {
     await Future.delayed(const Duration(seconds: 2));
 
-    const mockEmail = 'admin@email.com';
-    const mockPassword = 'admin123';
+    const mockAdminEmail = 'admin@email.com';
+    const mockAdminPassword = 'admin123';
 
-    if (_emailController.text == mockEmail &&
-        _passwordController.text == mockPassword) {
-      Navigator.of(context).pushReplacementNamed('/home');
+    const mockUserEmail = 'user@email.com';
+    const mockUserPassword = 'user123';
+
+    if (_emailController.text == mockAdminEmail &&
+        _passwordController.text == mockAdminPassword) {
+      Navigator.of(context)
+          .pushReplacementNamed('/admin_home', arguments: 'admin');
+    } else if (_emailController.text == mockUserEmail &&
+        _passwordController.text == mockUserPassword) {
+      Navigator.of(context).pushReplacementNamed('/home', arguments: 'user');
     } else {
       AwesomeDialog(
         context: context,

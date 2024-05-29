@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 
 import '../data/mock_data.dart';
 import '../data/post_model.dart';
+import '../widgets/add_campaign_button.dart';
 
 class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+  final String userType;
+
+  const HomePage({super.key, required this.userType});
 
   Future<List<Post>> fetchPosts() async {
     await Future.delayed(const Duration(seconds: 2));
@@ -31,6 +34,13 @@ class HomePage extends StatelessWidget {
                 color: Colors.white,
               ),
             ),
+            if (userType == 'admin') ...[
+              const Spacer(),
+              IconButton(
+                icon: const Icon(Icons.settings, color: Colors.white),
+                onPressed: () {},
+              ),
+            ],
           ],
         ),
       ),
@@ -39,6 +49,8 @@ class HomePage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            if (userType == 'admin') const AddCampaignButton(),
+            const SizedBox(height: 16),
             const Center(
               child: Text(
                 'Campanhas de Doação de Sangue',
