@@ -56,7 +56,6 @@ class _LogoPageState extends State<LogoPage> {
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: fontSize,
-                          fontFamily: 'Lexend',
                           fontWeight: FontWeight.w400,
                           height: 1.2,
                         ),

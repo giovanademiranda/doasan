@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:doasan/pages/campaign_form_page.dart';
 
-import '../data/mock_data.dart';
-import '../data/post_model.dart';
+import '../data/mock_data.dart' as mockData;
+import '../data/notification_model.dart' as customNotification;
 
-class AdminHomePage extends StatelessWidget {
-  const AdminHomePage({super.key});
+class NotificationsPage extends StatelessWidget {
+  const NotificationsPage({super.key});
 
-  Future<List<Post>> fetchPosts() async {
+  Future<List<customNotification.Notification>> fetchNotifications() async {
     await Future.delayed(const Duration(seconds: 2));
-    return mockPosts;
+    return mockData.mockNotifications;
   }
 
   @override
@@ -42,7 +41,7 @@ class AdminHomePage extends StatelessWidget {
           children: [
             const Center(
               child: Text(
-                'Campanhas de Doação de Sangue',
+                'Notificações',
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
@@ -50,30 +49,9 @@ class AdminHomePage extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 16),
-            Center(
-              child: ElevatedButton.icon(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const CampaignFormPage()),
-                  );
-                },
-                icon: const Icon(Icons.add),
-                label: const Text('Adicionar campanha'),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor:
-                      const Color(0xFFFF3737), // Definindo a cor de fundo
-                  foregroundColor: Colors.white, // Definindo a cor do texto
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                ),
-              ),
-            ),
-            const SizedBox(height: 16),
             Expanded(
-              child: FutureBuilder<List<Post>>(
-                future: fetchPosts(),
+              child: FutureBuilder<List<customNotification.Notification>>(
+                future: fetchNotifications(),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return const Center(child: CircularProgressIndicator());
@@ -81,13 +59,13 @@ class AdminHomePage extends StatelessWidget {
                     return const Center(child: Text('Erro ao carregar dados'));
                   } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
                     return const Center(
-                        child: Text('Nenhuma postagem encontrada'));
+                        child: Text('Nenhuma notificação encontrada'));
                   } else {
-                    final posts = snapshot.data!;
+                    final notifications = snapshot.data!;
                     return ListView.builder(
-                      itemCount: posts.length,
+                      itemCount: notifications.length,
                       itemBuilder: (context, index) {
-                        final post = posts[index];
+                        final notification = notifications[index];
                         return Card(
                           margin: const EdgeInsets.symmetric(vertical: 8),
                           child: Padding(
@@ -97,10 +75,10 @@ class AdminHomePage extends StatelessWidget {
                               children: [
                                 Row(
                                   children: [
-                                    const Icon(Icons.person),
+                                    const Icon(Icons.notifications),
                                     const SizedBox(width: 8),
                                     Text(
-                                      post.username,
+                                      notification.message,
                                       style: const TextStyle(
                                         fontWeight: FontWeight.bold,
                                         fontSize: 16,
@@ -109,9 +87,11 @@ class AdminHomePage extends StatelessWidget {
                                   ],
                                 ),
                                 const SizedBox(height: 8),
-                                Text(post.description),
+                                Text('Data: ${notification.date}'),
                                 const SizedBox(height: 8),
-                                Image.network(post.imageUrl),
+                                Text('Hora: ${notification.time}'),
+                                const SizedBox(height: 8),
+                                Text('Local: ${notification.location}'),
                               ],
                             ),
                           ),
@@ -124,25 +104,6 @@ class AdminHomePage extends StatelessWidget {
             ),
           ],
         ),
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Início',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.add),
-            label: 'Agendar',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Perfil',
-          ),
-        ],
-        currentIndex: 0,
-        selectedItemColor: const Color(0xFFFF3737),
-        onTap: (index) {},
       ),
     );
   }

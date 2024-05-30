@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import '../data/mock_data.dart';
 import '../data/post_model.dart';
 import '../widgets/add_campaign_button.dart';
+import '../widgets/custom_app_bar.dart';
+import '../widgets/custom_bottom_nav_bar.dart';
 
 class HomePage extends StatelessWidget {
   final String userType;
@@ -17,32 +19,9 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: const Color(0xFFFF3737),
-        automaticallyImplyLeading: false,
-        title: Row(
-          children: [
-            Image.network(
-              'https://cdn-icons-png.flaticon.com/512/2679/2679284.png',
-              width: 30,
-              height: 30,
-            ),
-            const SizedBox(width: 8),
-            const Text(
-              'Doasan - Sorocaba',
-              style: TextStyle(
-                color: Colors.white,
-              ),
-            ),
-            if (userType == 'admin') ...[
-              const Spacer(),
-              IconButton(
-                icon: const Icon(Icons.settings, color: Colors.white),
-                onPressed: () {},
-              ),
-            ],
-          ],
-        ),
+      appBar: CustomAppBar(
+        title: 'Doasan - Sorocaba',
+        isAdmin: userType == 'admin',
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -115,24 +94,10 @@ class HomePage extends StatelessWidget {
           ],
         ),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Início',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.add),
-            label: 'Agendar',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Perfil',
-          ),
-        ],
+      bottomNavigationBar: CustomBottomNavBar(
         currentIndex: 0,
-        selectedItemColor: const Color(0xFFFF3737),
         onTap: (index) {},
+        userType: userType,
       ),
     );
   }
