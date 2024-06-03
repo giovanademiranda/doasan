@@ -25,16 +25,17 @@ class CustomBottomNavBar extends StatelessWidget {
           label: 'Agendar',
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.person),
-          label: 'Perfil',
-        ),
-        BottomNavigationBarItem(
           icon: Icon(Icons.notifications),
           label: 'Notificações',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.person),
+          label: 'Perfil',
         ),
       ],
       currentIndex: currentIndex,
       selectedItemColor: const Color(0xFFFF3737),
+      unselectedItemColor: Colors.grey,
       onTap: (index) {
         if (index == 0) {
           if (userType == 'admin') {
@@ -43,11 +44,11 @@ class CustomBottomNavBar extends StatelessWidget {
             Navigator.of(context).pushReplacementNamed('/home');
           }
         } else if (index == 1) {
-          onTap(index); // Assuming this is for 'Agendar'
-        } else if (index == 2) {
+          onTap(index);
+        } else if (index == 3) {
           Navigator.of(context)
               .pushReplacementNamed('/profile', arguments: userType);
-        } else if (index == 3) {
+        } else if (index == 2) {
           Navigator.of(context).pushReplacementNamed('/notifications');
         }
       },

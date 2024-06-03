@@ -1,6 +1,10 @@
+import 'dart:convert';
+
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
+import '../data/user_model.dart';
 import '../widgets/custom_text_field.dart';
 
 class LoginPage extends StatefulWidget {
@@ -16,28 +20,50 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController _passwordController = TextEditingController();
 
   Future<void> _loginValidate() async {
-    await Future.delayed(const Duration(seconds: 2));
+    final email = _emailController.text;
+    final password = _passwordController.text;
 
-    const mockAdminEmail = 'admin@email.com';
-    const mockAdminPassword = 'admin123';
+    try {
+      final response = await http.post(
+        Uri.parse('http://localhost:3001/api/usuario/login'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode(<String, String>{
+          'email': email,
+          'password': password,
+        }),
+      );
 
-    const mockUserEmail = 'user@email.com';
-    const mockUserPassword = 'user123';
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        final userJson = data['usuario'];
+        final user = User.fromJson(userJson);
+        final userType = user.name == 'admin' ? 'admin' : 'user';
 
-    if (_emailController.text == mockAdminEmail &&
-        _passwordController.text == mockAdminPassword) {
-      Navigator.of(context)
-          .pushReplacementNamed('/admin_home', arguments: 'admin');
-    } else if (_emailController.text == mockUserEmail &&
-        _passwordController.text == mockUserPassword) {
-      Navigator.of(context).pushReplacementNamed('/home', arguments: 'user');
-    } else {
+        Navigator.of(context).pushReplacementNamed(
+          userType == 'admin' ? '/admin_home' : '/home',
+          arguments: user,
+        );
+      } else {
+        AwesomeDialog(
+          context: context,
+          dialogType: DialogType.error,
+          animType: AnimType.topSlide,
+          title: 'Erro',
+          desc: 'Credenciais inválidas. Por favor, tente novamente.',
+          btnOkOnPress: () {},
+          btnOkColor: Colors.red,
+        ).show();
+      }
+    } catch (e) {
+      print('Error: $e');
       AwesomeDialog(
         context: context,
         dialogType: DialogType.error,
         animType: AnimType.topSlide,
         title: 'Erro',
-        desc: 'Credenciais inválidas. Por favor, tente novamente.',
+        desc: 'Ocorreu um erro. Por favor, tente novamente.',
         btnOkOnPress: () {},
         btnOkColor: Colors.red,
       ).show();

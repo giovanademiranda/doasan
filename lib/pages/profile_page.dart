@@ -1,82 +1,163 @@
-import 'package:flutter/material.dart';
+import 'dart:convert';
 
-import '../data/mock_data.dart';
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+
+import '../data/user_model.dart';
 import '../widgets/custom_app_bar.dart';
 import '../widgets/custom_bottom_nav_bar.dart';
 
-class ProfilePage extends StatelessWidget {
-  final String userType;
+class ProfilePage extends StatefulWidget {
+  final User user;
 
-  const ProfilePage({super.key, required this.userType});
+  const ProfilePage({super.key, required this.user});
+
+  @override
+  _ProfilePageState createState() => _ProfilePageState();
+}
+
+class _ProfilePageState extends State<ProfilePage> {
+  int _currentIndex = 3;
+  bool isLoading = true;
+  late User user;
+
+  @override
+  void initState() {
+    super.initState();
+    user = widget.user;
+    _fetchProfileData();
+  }
+
+  Future<void> _fetchProfileData() async {
+    try {
+      final response = await http.get(
+        Uri.parse('http://localhost:3001/api/usuario/profile'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        setState(() {
+          final userData = jsonDecode(response.body)['usuario'];
+          user = User.fromJson(userData);
+          isLoading = false;
+        });
+      } else {
+        setState(() {
+          isLoading = false;
+        });
+        _showErrorDialog(
+            'Erro ao carregar dados do perfil. Por favor, tente novamente.');
+      }
+    } catch (e) {
+      setState(() {
+        isLoading = false;
+      });
+      _showErrorDialog('Ocorreu um erro. Por favor, tente novamente.');
+    }
+  }
+
+  void _showErrorDialog(String message) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Erro'),
+          content: Text(message),
+          actions: <Widget>[
+            TextButton(
+              child: Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _onBottomNavTap(int index) {
+    if (index == 0) {
+      if (user.name == 'admin') {
+        Navigator.of(context).pushReplacementNamed('/admin_home');
+      } else {
+        Navigator.of(context).pushReplacementNamed('/home');
+      }
+    } else if (index == 1) {
+      Navigator.of(context).pushReplacementNamed('/schedule');
+    } else if (index == 2) {
+      Navigator.of(context).pushReplacementNamed('/notifications');
+    } else if (index == 3) {
+      Navigator.of(context).pushReplacementNamed('/profile', arguments: user);
+    }
+
+    setState(() {
+      _currentIndex = index;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    final userData = mockUser;
-
     return Scaffold(
       appBar: const CustomAppBar(
         title: 'Doasan - Sorocaba',
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Center(
-              child: Text(
-                'Perfil',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
+      body: isLoading
+          ? Center(child: CircularProgressIndicator())
+          : Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Center(
+                    child: Text(
+                      'Perfil',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  buildProfileField('Nome Completo', user.name),
+                  buildProfileField('Email', user.email),
+                  buildProfileField('Telefone', user.phone),
+                  buildProfileField('Endereço', user.address),
+                  buildProfileField('Grupo de Sangue', user.bloodType),
+                  buildProfileField('Data de Nascimento', user.birthDate),
+                  buildProfileField('Peso', user.weight),
+                  const SizedBox(height: 24),
+                  Center(
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.of(context).pushReplacementNamed('/login');
+                      },
+                      style: ElevatedButton.styleFrom(
+                        foregroundColor: Colors.white,
+                        backgroundColor: const Color(0xFFFF3737),
+                        padding: const EdgeInsets.symmetric(vertical: 15),
+                        textStyle: const TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.w400,
+                          color: Colors.white,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                        minimumSize: const Size.fromHeight(61),
+                      ),
+                      child: const Text('Sair'),
+                    ),
+                  ),
+                ],
               ),
             ),
-            const SizedBox(height: 16),
-            buildProfileField('Nome Completo', userData.name),
-            buildProfileField('Email', userData.email),
-            buildProfileField('Telefone', userData.phone),
-            buildProfileField('Endereço', userData.address),
-            buildProfileField('Grupo de Sangue', userData.bloodType),
-            buildProfileField('Data de Nascimento', userData.birthDate),
-            buildProfileField('Peso', userData.weight),
-            const SizedBox(height: 24),
-            Center(
-              child: ElevatedButton(
-                onPressed: () {
-                  Navigator.of(context).pushReplacementNamed('/login');
-                },
-                style: ElevatedButton.styleFrom(
-                  foregroundColor: Colors.white,
-                  backgroundColor: const Color(0xFFFF3737),
-                  padding: const EdgeInsets.symmetric(vertical: 15),
-                  textStyle: const TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.w400,
-                    color: Colors.white,
-                  ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(5),
-                  ),
-                  minimumSize: const Size.fromHeight(61),
-                ),
-                child: const Text('Sair'),
-              ),
-            ),
-          ],
-        ),
-      ),
       bottomNavigationBar: CustomBottomNavBar(
-        currentIndex: 2,
-        onTap: (index) {
-          if (index == 0) {
-            if (userType == 'admin') {
-              Navigator.of(context).pushReplacementNamed('/admin_home');
-            } else {
-              Navigator.of(context).pushReplacementNamed('/home');
-            }
-          }
-        },
-        userType: userType,
+        currentIndex: _currentIndex,
+        onTap: _onBottomNavTap,
+        userType: user.name == 'admin' ? 'admin' : 'user',
       ),
     );
   }

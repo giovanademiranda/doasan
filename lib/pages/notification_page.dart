@@ -2,37 +2,36 @@ import 'package:flutter/material.dart';
 
 import '../data/mock_data.dart' as mockData;
 import '../data/notification_model.dart' as customNotification;
+import '../widgets/custom_app_bar.dart';
+import '../widgets/custom_bottom_nav_bar.dart';
 
-class NotificationsPage extends StatelessWidget {
+class NotificationsPage extends StatefulWidget {
   const NotificationsPage({super.key});
 
+  @override
+  _NotificationScreenState createState() => _NotificationScreenState();
+}
+
+class _NotificationScreenState extends State<NotificationsPage> {
+  int _currentIndex = 2;
+  final String userType = 'user'; // Or 'admin', depending on your logic
   Future<List<customNotification.Notification>> fetchNotifications() async {
     await Future.delayed(const Duration(seconds: 2));
     return mockData.mockNotifications;
   }
 
+  void _onBottomNavTap(int index) {
+    setState(() {
+      _currentIndex = index;
+    });
+    // Handle navigation based on the index
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: const Color(0xFFFF3737),
-        automaticallyImplyLeading: false,
-        title: Row(
-          children: [
-            Image.network(
-              'https://cdn-icons-png.flaticon.com/512/2679/2679284.png',
-              width: 30,
-              height: 30,
-            ),
-            const SizedBox(width: 8),
-            const Text(
-              'Doasan - Sorocaba',
-              style: TextStyle(
-                color: Colors.white,
-              ),
-            ),
-          ],
-        ),
+      appBar: CustomAppBar(
+        title: 'Doasan - Sorocaba',
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -104,6 +103,11 @@ class NotificationsPage extends StatelessWidget {
             ),
           ],
         ),
+      ),
+      bottomNavigationBar: CustomBottomNavBar(
+        currentIndex: _currentIndex,
+        onTap: _onBottomNavTap,
+        userType: userType,
       ),
     );
   }

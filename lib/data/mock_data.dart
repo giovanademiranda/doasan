@@ -1,26 +1,5 @@
 import 'notification_model.dart';
 import 'post_model.dart';
-import 'user_model.dart';
-
-final User mockUser = User(
-  name: 'John Doe',
-  email: 'example@gmail.com',
-  phone: '(15) 9 9999-9999',
-  address: 'Rua: example doe 123',
-  bloodType: 'A+',
-  birthDate: '01/01/2000',
-  weight: '65',
-);
-
-final User mockAdmin = User(
-  name: 'Admin User',
-  email: 'admin@email.com',
-  phone: '(15) 9 9999-9999',
-  address: 'Rua: admin street 456',
-  bloodType: 'O+',
-  birthDate: '01/01/1980',
-  weight: '70',
-);
 
 List<Post> mockPosts = [
   Post(

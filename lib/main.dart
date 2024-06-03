@@ -51,7 +51,9 @@ class MyApp extends StatelessWidget {
           final userType = settings.arguments as String?;
           if (userType != null) {
             return MaterialPageRoute(
-              builder: (context) => ProfilePage(userType: userType),
+              builder: (context) => ProfilePage(
+                user: '',
+              ),
             );
           }
         }
