@@ -9,6 +9,7 @@ class CustomTextField extends StatelessWidget {
   final TextEditingController? controller;
   final String? Function(String?)? validator;
   final TextInputType keyboardType;
+  final Widget? child;
 
   const CustomTextField({
     super.key,
@@ -20,6 +21,7 @@ class CustomTextField extends StatelessWidget {
     this.controller,
     this.validator,
     this.keyboardType = TextInputType.text,
+    this.child,
   });
 
   @override

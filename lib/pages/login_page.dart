@@ -18,23 +18,11 @@ class _LoginPageState extends State<LoginPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  bool _obscureText = true;
 
   Future<void> _loginValidate() async {
     final email = _emailController.text;
     final password = _passwordController.text;
-
-    if (email.isEmpty || password.isEmpty) {
-      AwesomeDialog(
-        context: context,
-        dialogType: DialogType.warning,
-        animType: AnimType.topSlide,
-        title: 'Atenção',
-        desc: 'Por favor, preencha todos os campos',
-        btnOkOnPress: () {},
-        btnOkColor: Colors.red,
-      ).show();
-      return;
-    }
 
     try {
       final body = jsonEncode(<String, String>{
@@ -59,11 +47,10 @@ class _LoginPageState extends State<LoginPage> {
         final data = jsonDecode(response.body);
         final userJson = data['usuario'];
         final user = User.fromJson(userJson);
-        final userType = user.name == 'admin' ? 'admin' : 'user';
 
+        final isUserAdmin = user.name == 'admin';
         Navigator.of(context).pushReplacementNamed(
-          userType == 'admin' ? '/admin_home' : '/home',
-          arguments: user,
+          isUserAdmin ? '/admin_home' : '/home',
         );
       } else {
         AwesomeDialog(
@@ -89,9 +76,6 @@ class _LoginPageState extends State<LoginPage> {
       ).show();
     }
   }
-
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -178,14 +162,30 @@ class _LoginPageState extends State<LoginPage> {
                     const SizedBox(height: 10),
                     CustomTextField(
                       hintText: 'Digite sua senha',
-                      obscureText: true,
-                      controller: _passwordController,
+                      obscureText: _obscureText,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Por favor, insira sua senha';
                         }
                         return null;
                       },
+                      child: TextFormField(
+                        decoration: InputDecoration(
+                          hintText: 'Digite sua senha',
+                          suffixIcon: IconButton(
+                            icon: Icon(
+                              _obscureText
+                                  ? Icons.visibility_off
+                                  : Icons.visibility,
+                            ),
+                            onPressed: () {
+                              setState(() {
+                                _obscureText = !_obscureText;
+                              });
+                            },
+                          ),
+                        ),
+                      ),
                     ),
                     const SizedBox(height: 30),
                     Center(

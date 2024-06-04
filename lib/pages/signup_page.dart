@@ -1,4 +1,5 @@
 import 'dart:convert';
+
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_masked_text2/flutter_masked_text2.dart';
@@ -26,16 +27,16 @@ class _SignupPageState extends State<SignupPage> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final MaskedTextController _phoneController =
-  MaskedTextController(mask: '(00) 0 0000-0000');
+      MaskedTextController(mask: '(00) 0 0000-0000');
   final TextEditingController _addressController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final MaskedTextController _birthDateController =
-  MaskedTextController(mask: '00/00/0000');
+      MaskedTextController(mask: '00/00/0000');
   final MaskedTextController _weightController =
-  MaskedTextController(mask: '000');
+      MaskedTextController(mask: '000');
 
   final TextEditingController _medicalHistoryController =
-  TextEditingController();
+      TextEditingController();
 
   String _selectedBloodType = '';
 
@@ -115,7 +116,8 @@ class _SignupPageState extends State<SignupPage> {
         },
       ).show();
     } else {
-      final message = jsonDecode(response.body)['message'] ?? 'Erro desconhecido';
+      final message =
+          jsonDecode(response.body)['message'] ?? 'Erro desconhecido';
       AwesomeDialog(
         context: context,
         dialogType: DialogType.error,
@@ -135,32 +137,40 @@ class _SignupPageState extends State<SignupPage> {
     return null;
   }
 
-  void _onSubmit() {
-      if (_formKeys[1].currentState?.validate() ?? false) {
-        if (_validateBloodType() == null) {
-          _registerUser();
-          AwesomeDialog(
-            context: context,
-            dialogType: DialogType.success,
-            animType: AnimType.topSlide,
-            title: 'Sucesso!',
-            desc: 'Usuário cadastrado com sucesso!',
-            btnOkOnPress: () {},
-            btnOkColor: Colors.green,
-          ).show();
-          Navigator.of(context).pushReplacementNamed('/home');
+  String? _validatePassword(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Por favor, insira sua senha';
+    } else if (value.length < 6) {
+      return 'A senha deve ter no mínimo 6 caracteres';
+    }
+    return null;
+  }
 
-        } else {
-          AwesomeDialog(
-            context: context,
-            dialogType: DialogType.warning,
-            animType: AnimType.topSlide,
-            title: 'Atenção',
-            desc: 'Por favor, selecione um grupo sanguíneo',
-            btnOkOnPress: () {},
-            btnOkColor: Colors.yellow,
-          ).show();
-        }
+  void _onSubmit() {
+    if (_formKeys[1].currentState?.validate() ?? false) {
+      if (_validateBloodType() == null) {
+        _registerUser();
+        AwesomeDialog(
+          context: context,
+          dialogType: DialogType.success,
+          animType: AnimType.topSlide,
+          title: 'Sucesso!',
+          desc: 'Usuário cadastrado com sucesso!',
+          btnOkOnPress: () {},
+          btnOkColor: Colors.green,
+        ).show();
+        Navigator.of(context).pushReplacementNamed('/home');
+      } else {
+        AwesomeDialog(
+          context: context,
+          dialogType: DialogType.warning,
+          animType: AnimType.topSlide,
+          title: 'Atenção',
+          desc: 'Por favor, selecione um grupo sanguíneo',
+          btnOkOnPress: () {},
+          btnOkColor: Colors.yellow,
+        ).show();
+      }
     }
   }
 
@@ -314,12 +324,7 @@ class _SignupPageState extends State<SignupPage> {
               hintText: 'Digite sua senha',
               obscureText: true,
               controller: _passwordController,
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Por favor, insira sua senha';
-                }
-                return null;
-              },
+              validator: _validatePassword,
             ),
             const SizedBox(height: 24.0),
             ElevatedButton(

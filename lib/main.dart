@@ -10,8 +10,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
-import 'data/user_model.dart';
-
 void main() {
   initializeDateFormatting('pt_BR', null);
   runApp(const MyApp());
@@ -43,19 +41,17 @@ class MyApp extends StatelessWidget {
         '/logo': (context) => const LogoPage(),
         '/login': (context) => const LoginPage(),
         '/cadastro': (context) => const SignupPage(),
-        '/home': (context) => const HomePage(userType: 'user'),
-        '/admin_home': (context) => const HomePage(userType: 'admin'),
+        '/home': (context) => const HomePage(
+              userType: '',
+            ),
+        '/home_admin': (context) => const HomePage(
+              userType: 'admin',
+            ),
         '/add_campaign': (context) => const AddCampaignPage(),
         '/notifications': (context) => const NotificationsPage(),
-      },
-      onGenerateRoute: (settings) {
-        if (settings.name == '/profile') {
-          final user = settings.arguments as User?;
-          return MaterialPageRoute(
-            builder: (context) => ProfilePage(user: user!),
-          );
-        }
-        return null;
+        '/profile': (context) => const ProfilePage(
+              user: null,
+            ),
       },
     );
   }
