@@ -31,9 +31,10 @@ class _ProfilePageState extends State<ProfilePage> {
   Future<void> _fetchProfileData() async {
     try {
       final response = await http.get(
-        Uri.parse('http://localhost:3001/api/usuario/profile'),
+        Uri.parse('http://localhost:3001/api/usuario/login'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
+
         },
       );
 
@@ -58,6 +59,7 @@ class _ProfilePageState extends State<ProfilePage> {
     }
   }
 
+
   void _showErrorDialog(String message) {
     showDialog(
       context: context,
@@ -81,9 +83,9 @@ class _ProfilePageState extends State<ProfilePage> {
   void _onBottomNavTap(int index) {
     if (index == 0) {
       if (user.name == 'admin') {
-        Navigator.of(context).pushReplacementNamed('/admin_home');
+        Navigator.of(context).pushReplacementNamed('/admin_home', arguments: user);
       } else {
-        Navigator.of(context).pushReplacementNamed('/home');
+        Navigator.of(context).pushReplacementNamed('/home', arguments: user);
       }
     } else if (index == 1) {
       Navigator.of(context).pushReplacementNamed('/schedule');
@@ -107,53 +109,53 @@ class _ProfilePageState extends State<ProfilePage> {
       body: isLoading
           ? Center(child: CircularProgressIndicator())
           : Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Center(
-                    child: Text(
-                      'Perfil',
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  buildProfileField('Nome Completo', user.name),
-                  buildProfileField('Email', user.email),
-                  buildProfileField('Telefone', user.phone),
-                  buildProfileField('Endereço', user.address),
-                  buildProfileField('Grupo de Sangue', user.bloodType),
-                  buildProfileField('Data de Nascimento', user.birthDate),
-                  buildProfileField('Peso', user.weight),
-                  const SizedBox(height: 24),
-                  Center(
-                    child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.of(context).pushReplacementNamed('/login');
-                      },
-                      style: ElevatedButton.styleFrom(
-                        foregroundColor: Colors.white,
-                        backgroundColor: const Color(0xFFFF3737),
-                        padding: const EdgeInsets.symmetric(vertical: 15),
-                        textStyle: const TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.w400,
-                          color: Colors.white,
-                        ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(5),
-                        ),
-                        minimumSize: const Size.fromHeight(61),
-                      ),
-                      child: const Text('Sair'),
-                    ),
-                  ),
-                ],
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Center(
+              child: Text(
+                'Perfil',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
+            const SizedBox(height: 16),
+            buildProfileField('Nome Completo', user.name),
+            buildProfileField('Email', user.email),
+            buildProfileField('Telefone', user.phone),
+            buildProfileField('Endereço', user.address),
+            buildProfileField('Grupo de Sangue', user.bloodType),
+            buildProfileField('Data de Nascimento', user.birthDate),
+            buildProfileField('Peso', user.weight.toString()),
+            const SizedBox(height: 24),
+            Center(
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).pushReplacementNamed('/login');
+                },
+                style: ElevatedButton.styleFrom(
+                  foregroundColor: Colors.white,
+                  backgroundColor: const Color(0xFFFF3737),
+                  padding: const EdgeInsets.symmetric(vertical: 15),
+                  textStyle: const TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.w400,
+                    color: Colors.white,
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                  minimumSize: const Size.fromHeight(61),
+                ),
+                child: const Text('Sair'),
+              ),
+            ),
+          ],
+        ),
+      ),
       bottomNavigationBar: CustomBottomNavBar(
         currentIndex: _currentIndex,
         onTap: _onBottomNavTap,

@@ -23,17 +23,37 @@ class _LoginPageState extends State<LoginPage> {
     final email = _emailController.text;
     final password = _passwordController.text;
 
+    if (email.isEmpty || password.isEmpty) {
+      AwesomeDialog(
+        context: context,
+        dialogType: DialogType.warning,
+        animType: AnimType.topSlide,
+        title: 'Atenção',
+        desc: 'Por favor, preencha todos os campos',
+        btnOkOnPress: () {},
+        btnOkColor: Colors.red,
+      ).show();
+      return;
+    }
+
     try {
+      final body = jsonEncode(<String, String>{
+        'email': email,
+        'password': password,
+      });
+
+      print('Request Body: $body');
+
       final response = await http.post(
         Uri.parse('http://localhost:3001/api/usuario/login'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
-        body: jsonEncode(<String, String>{
-          'email': email,
-          'password': password,
-        }),
+        body: body,
       );
+
+      print('Status Code: ${response.statusCode}');
+      print('Response Body: ${response.body}');
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
@@ -69,6 +89,9 @@ class _LoginPageState extends State<LoginPage> {
       ).show();
     }
   }
+
+
+
 
   @override
   Widget build(BuildContext context) {

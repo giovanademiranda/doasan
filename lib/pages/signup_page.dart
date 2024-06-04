@@ -1,6 +1,8 @@
+import 'dart:convert';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_masked_text2/flutter_masked_text2.dart';
+import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 
 import '../widgets/custom_choice_chip.dart';
@@ -24,16 +26,16 @@ class _SignupPageState extends State<SignupPage> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final MaskedTextController _phoneController =
-      MaskedTextController(mask: '(00) 0 0000-0000');
+  MaskedTextController(mask: '(00) 0 0000-0000');
   final TextEditingController _addressController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final MaskedTextController _birthDateController =
-      MaskedTextController(mask: '00/00/0000');
+  MaskedTextController(mask: '00/00/0000');
   final MaskedTextController _weightController =
-      MaskedTextController(mask: '000');
+  MaskedTextController(mask: '000');
 
   final TextEditingController _medicalHistoryController =
-      TextEditingController();
+  TextEditingController();
 
   String _selectedBloodType = '';
 
@@ -81,17 +83,45 @@ class _SignupPageState extends State<SignupPage> {
   }
 
   Future<void> _registerUser() async {
-    await Future.delayed(const Duration(seconds: 2));
-    bool apiConnected = false;
+    final String apiUrl = 'http://localhost:3001/api/usuario/create';
 
-    if (apiConnected) {
+    final response = await http.post(
+      Uri.parse(apiUrl),
+      headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode({
+        'nome': _nameController.text,
+        'email': _emailController.text,
+        'senha': _passwordController.text,
+        'data_nascimento': _birthDateController.text,
+        'telefone': _phoneController.text,
+        'endereco': _addressController.text,
+        'tipo_sanguineo': _selectedBloodType,
+        'peso': _weightController.text,
+        'historico_medico': _medicalHistoryController.text,
+      }),
+    );
+
+    if (response.statusCode == 201) {
+      AwesomeDialog(
+        context: context,
+        dialogType: DialogType.success,
+        animType: AnimType.topSlide,
+        title: 'Sucesso',
+        desc: 'Usuário cadastrado com sucesso!',
+        btnOkOnPress: () {
+          Navigator.of(context).pushReplacementNamed('/login');
+        },
+      ).show();
     } else {
+      final message = jsonDecode(response.body)['message'] ?? 'Erro desconhecido';
       AwesomeDialog(
         context: context,
         dialogType: DialogType.error,
         animType: AnimType.topSlide,
         title: 'Erro',
-        desc: 'Sem resposta da API, não foi possível finalizar o Cadastro!',
+        desc: message,
         btnOkOnPress: () {},
         btnOkColor: Colors.red,
       ).show();
@@ -106,20 +136,31 @@ class _SignupPageState extends State<SignupPage> {
   }
 
   void _onSubmit() {
-    if (_formKeys[1].currentState?.validate() ?? false) {
-      if (_validateBloodType() == null) {
-        _registerUser();
-      } else {
-        AwesomeDialog(
-          context: context,
-          dialogType: DialogType.warning,
-          animType: AnimType.topSlide,
-          title: 'Atenção',
-          desc: 'Por favor, selecione um grupo sanguíneo',
-          btnOkOnPress: () {},
-          btnOkColor: Colors.red,
-        ).show();
-      }
+      if (_formKeys[1].currentState?.validate() ?? false) {
+        if (_validateBloodType() == null) {
+          _registerUser();
+          AwesomeDialog(
+            context: context,
+            dialogType: DialogType.success,
+            animType: AnimType.topSlide,
+            title: 'Sucesso!',
+            desc: 'Usuário cadastrado com sucesso!',
+            btnOkOnPress: () {},
+            btnOkColor: Colors.green,
+          ).show();
+          Navigator.of(context).pushReplacementNamed('/home');
+
+        } else {
+          AwesomeDialog(
+            context: context,
+            dialogType: DialogType.warning,
+            animType: AnimType.topSlide,
+            title: 'Atenção',
+            desc: 'Por favor, selecione um grupo sanguíneo',
+            btnOkOnPress: () {},
+            btnOkColor: Colors.yellow,
+          ).show();
+        }
     }
   }
 
