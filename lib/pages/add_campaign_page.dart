@@ -4,6 +4,9 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../widgets/custom_app_bar.dart';
+import '../widgets/custom_bottom_nav_bar.dart';
+
 class AddCampaignPage extends StatefulWidget {
   const AddCampaignPage({super.key});
 
@@ -39,9 +42,9 @@ class _AddCampaignPageState extends State<AddCampaignPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: const Color(0xFFFF3737),
-        title: const Text('Adicionar Campanha'),
+      appBar: const CustomAppBar(
+        title: 'Adicionar Campanha',
+        showBackButton: true,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -89,6 +92,19 @@ class _AddCampaignPageState extends State<AddCampaignPage> {
             ),
           ],
         ),
+      ),
+      bottomNavigationBar: CustomBottomNavBar(
+        currentIndex: 1,
+        onTap: (index) {
+          if (index == 0) {
+            Navigator.of(context).pushReplacementNamed('/home');
+          } else if (index == 2) {
+            Navigator.of(context).pushReplacementNamed('/notifications');
+          } else if (index == 3) {
+            Navigator.of(context).pushReplacementNamed('/profile');
+          }
+        },
+        userType: 'admin',
       ),
     );
   }

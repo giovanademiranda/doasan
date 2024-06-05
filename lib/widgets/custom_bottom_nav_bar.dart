@@ -39,17 +39,17 @@ class CustomBottomNavBar extends StatelessWidget {
       onTap: (index) {
         if (index == 0) {
           if (userType == 'admin') {
-            Navigator.of(context).pushReplacementNamed('/admin_home');
+            Navigator.of(context).pushReplacementNamed('/home_admin');
           } else {
             Navigator.of(context).pushReplacementNamed('/home');
           }
         } else if (index == 1) {
-          onTap(index);
-        } else if (index == 3) {
-          Navigator.of(context)
-              .pushReplacementNamed('/profile', arguments: userType);
+          Navigator.of(context).pushReplacementNamed('/add_campaign');
         } else if (index == 2) {
           Navigator.of(context).pushReplacementNamed('/notifications');
+        } else if (index == 3) {
+          Navigator.of(context)
+              .pushReplacementNamed('/profile', arguments: {'user': userType});
         }
       },
     );

@@ -1,9 +1,11 @@
+import 'package:doasan/data/user_model.dart';
 import 'package:doasan/pages/add_campaign_page.dart';
 import 'package:doasan/pages/home_page.dart';
 import 'package:doasan/pages/login_page.dart';
 import 'package:doasan/pages/logo_page.dart';
 import 'package:doasan/pages/notification_page.dart';
 import 'package:doasan/pages/profile_page.dart';
+import 'package:doasan/pages/reports_page.dart';
 import 'package:doasan/pages/signup_page.dart';
 import 'package:doasan/pages/splash_screen.dart';
 import 'package:flutter/material.dart';
@@ -36,22 +38,65 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       initialRoute: '/',
-      routes: {
-        '/': (context) => const SplashScreen(),
-        '/logo': (context) => const LogoPage(),
-        '/login': (context) => const LoginPage(),
-        '/cadastro': (context) => const SignupPage(),
-        '/home': (context) => const HomePage(
-              userType: '',
-            ),
-        '/home_admin': (context) => const HomePage(
-              userType: 'admin',
-            ),
-        '/add_campaign': (context) => const AddCampaignPage(),
-        '/notifications': (context) => const NotificationsPage(),
-        '/profile': (context) => const ProfilePage(
-              user: null,
-            ),
+      onGenerateRoute: (settings) {
+        switch (settings.name) {
+          case '/':
+            return MaterialPageRoute(builder: (_) => const SplashScreen());
+          case '/logo':
+            return MaterialPageRoute(builder: (_) => const LogoPage());
+          case '/login':
+            return MaterialPageRoute(builder: (_) => const LoginPage());
+          case '/cadastro':
+            return MaterialPageRoute(builder: (_) => const SignupPage());
+          case '/home':
+            final args = settings.arguments as Map<String, dynamic>?;
+            final userType = args?['userType'] as String?;
+            return MaterialPageRoute(
+              builder: (_) => HomePage(
+                userType: userType ?? '',
+              ),
+            );
+          case '/home_admin':
+            return MaterialPageRoute(
+              builder: (_) => const HomePage(
+                userType: 'admin',
+              ),
+            );
+          case '/add_campaign':
+            return MaterialPageRoute(builder: (_) => const AddCampaignPage());
+          case '/notifications':
+            return MaterialPageRoute(
+              builder: (_) => const NotificationsPage(),
+            );
+          case '/profile':
+            final args = settings.arguments as Map<String, dynamic>?;
+            if (args != null) {
+              final user = args['user'] as User;
+              return MaterialPageRoute(
+                builder: (_) => ProfilePage(user: user),
+              );
+            }
+            return _errorRoute();
+          case '/relatorios':
+            return MaterialPageRoute(builder: (_) => const ReportsPage());
+          default:
+            return _errorRoute();
+        }
+      },
+    );
+  }
+
+  Route<dynamic> _errorRoute() {
+    return MaterialPageRoute(
+      builder: (_) {
+        return Scaffold(
+          appBar: AppBar(
+            title: const Text('Erro'),
+          ),
+          body: const Center(
+            child: Text('Rota não encontrada!'),
+          ),
+        );
       },
     );
   }

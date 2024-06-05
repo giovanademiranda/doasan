@@ -3,11 +3,13 @@ import 'package:flutter/material.dart';
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
   final bool isAdmin;
+  final bool showBackButton;
 
   const CustomAppBar({
     super.key,
     required this.title,
     this.isAdmin = false,
+    this.showBackButton = false,
   });
 
   @override
@@ -17,6 +19,13 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       automaticallyImplyLeading: false,
       title: Row(
         children: [
+          if (showBackButton)
+            IconButton(
+              icon: const Icon(Icons.arrow_back, color: Colors.white),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
           Image.network(
             'https://cdn-icons-png.flaticon.com/512/2679/2679284.png',
             width: 30,

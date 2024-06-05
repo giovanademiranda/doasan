@@ -6,6 +6,7 @@ import 'package:http/http.dart' as http;
 
 import '../data/user_model.dart';
 import '../widgets/custom_text_field.dart';
+import '../widgets/password_field.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -18,16 +19,15 @@ class _LoginPageState extends State<LoginPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  bool _obscureText = true;
 
   Future<void> _loginValidate() async {
     final email = _emailController.text;
-    final password = _passwordController.text;
+    final senha = _passwordController.text;
 
     try {
       final body = jsonEncode(<String, String>{
         'email': email,
-        'password': password,
+        'senha': senha,
       });
 
       print('Request Body: $body');
@@ -50,7 +50,8 @@ class _LoginPageState extends State<LoginPage> {
 
         final isUserAdmin = user.name == 'admin';
         Navigator.of(context).pushReplacementNamed(
-          isUserAdmin ? '/admin_home' : '/home',
+          isUserAdmin ? '/home_admin' : '/home',
+          arguments: {'user': user, 'userType': isUserAdmin ? 'admin' : ''},
         );
       } else {
         AwesomeDialog(
@@ -160,32 +161,15 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                     ),
                     const SizedBox(height: 10),
-                    CustomTextField(
+                    PasswordField(
+                      controller: _passwordController,
                       hintText: 'Digite sua senha',
-                      obscureText: _obscureText,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Por favor, insira sua senha';
                         }
                         return null;
                       },
-                      child: TextFormField(
-                        decoration: InputDecoration(
-                          hintText: 'Digite sua senha',
-                          suffixIcon: IconButton(
-                            icon: Icon(
-                              _obscureText
-                                  ? Icons.visibility_off
-                                  : Icons.visibility,
-                            ),
-                            onPressed: () {
-                              setState(() {
-                                _obscureText = !_obscureText;
-                              });
-                            },
-                          ),
-                        ),
-                      ),
                     ),
                     const SizedBox(height: 30),
                     Center(
