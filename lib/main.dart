@@ -4,6 +4,7 @@ import 'package:doasan/pages/login_page.dart';
 import 'package:doasan/pages/logo_page.dart';
 import 'package:doasan/pages/notification_page.dart';
 import 'package:doasan/pages/profile_page.dart';
+import 'package:doasan/pages/reports_page.dart';
 import 'package:doasan/pages/signup_page.dart';
 import 'package:doasan/pages/splash_screen.dart';
 import 'package:flutter/material.dart';
@@ -47,6 +48,7 @@ class MyApp extends StatelessWidget {
         '/admin_home': (context) => const HomePage(userType: 'admin'),
         '/add_campaign': (context) => const AddCampaignPage(),
         '/notifications': (context) => const NotificationsPage(),
+        '/relatorios': (context) => const ReportsPage(),
       },
       onGenerateRoute: (settings) {
         if (settings.name == '/profile') {
