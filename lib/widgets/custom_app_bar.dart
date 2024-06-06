@@ -38,13 +38,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
               color: Colors.white,
             ),
           ),
-          if (isAdmin) ...[
-            const Spacer(),
-            IconButton(
-              icon: const Icon(Icons.settings, color: Colors.white),
-              onPressed: () {},
-            ),
-          ],
+
         ],
       ),
     );

@@ -1,11 +1,13 @@
 import 'package:doasan/data/user_model.dart';
 import 'package:doasan/pages/add_campaign_page.dart';
 import 'package:doasan/pages/home_page.dart';
+import 'package:doasan/pages/home_admin_page.dart';
 import 'package:doasan/pages/login_page.dart';
 import 'package:doasan/pages/logo_page.dart';
 import 'package:doasan/pages/notification_page.dart';
 import 'package:doasan/pages/profile_page.dart';
 import 'package:doasan/pages/reports_page.dart';
+import 'package:doasan/pages/schedule_page.dart';
 import 'package:doasan/pages/signup_page.dart';
 import 'package:doasan/pages/splash_screen.dart';
 import 'package:flutter/material.dart';
@@ -50,17 +52,15 @@ class MyApp extends StatelessWidget {
             return MaterialPageRoute(builder: (_) => const SignupPage());
           case '/home':
             final args = settings.arguments as Map<String, dynamic>?;
-            final userType = args?['userType'] as String?;
+            final user = args?['user'] as User?;
             return MaterialPageRoute(
-              builder: (_) => HomePage(
-                userType: userType ?? '',
-              ),
+              builder: (_) => HomePage(user: user),
             );
           case '/home_admin':
+            final args = settings.arguments as Map<String, dynamic>?;
+            final user = args?['user'] as User?;
             return MaterialPageRoute(
-              builder: (_) => const HomePage(
-                userType: 'admin',
-              ),
+              builder: (_) => HomeAdminPage(user: user!),
             );
           case '/add_campaign':
             return MaterialPageRoute(builder: (_) => const AddCampaignPage());
@@ -70,10 +70,19 @@ class MyApp extends StatelessWidget {
             );
           case '/profile':
             final args = settings.arguments as Map<String, dynamic>?;
-            if (args != null) {
-              final user = args['user'] as User;
+            final user = args?['user'] as User?;
+            if (user != null) {
               return MaterialPageRoute(
                 builder: (_) => ProfilePage(user: user),
+              );
+            }
+            return _errorRoute();
+          case '/schedule':
+            final args = settings.arguments as Map<String, dynamic>?;
+            final doadorId = args?['doadorId'] as String?;
+            if (doadorId != null) {
+              return MaterialPageRoute(
+                builder: (_) => ScheduleScreen(doadorId: doadorId),
               );
             }
             return _errorRoute();

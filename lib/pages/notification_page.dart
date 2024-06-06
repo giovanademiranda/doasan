@@ -14,23 +14,16 @@ class NotificationsPage extends StatefulWidget {
 
 class _NotificationScreenState extends State<NotificationsPage> {
   int _currentIndex = 2;
-  final String userType = 'user'; // Or 'admin', depending on your logic
+  final String userType = 'user';
   Future<List<customNotification.Notification>> fetchNotifications() async {
     await Future.delayed(const Duration(seconds: 2));
     return mockData.mockNotifications;
   }
 
-  void _onBottomNavTap(int index) {
-    setState(() {
-      _currentIndex = index;
-    });
-    // Handle navigation based on the index
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(
+      appBar: const CustomAppBar(
         title: 'Doasan - Sorocaba',
       ),
       body: Padding(
@@ -104,11 +97,7 @@ class _NotificationScreenState extends State<NotificationsPage> {
           ],
         ),
       ),
-      bottomNavigationBar: CustomBottomNavBar(
-        currentIndex: _currentIndex,
-        onTap: _onBottomNavTap,
-        userType: userType,
-      ),
+
     );
   }
 }

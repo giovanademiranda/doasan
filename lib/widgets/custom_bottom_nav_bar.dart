@@ -37,20 +37,7 @@ class CustomBottomNavBar extends StatelessWidget {
       selectedItemColor: const Color(0xFFFF3737),
       unselectedItemColor: Colors.grey,
       onTap: (index) {
-        if (index == 0) {
-          if (userType == 'admin') {
-            Navigator.of(context).pushReplacementNamed('/home_admin');
-          } else {
-            Navigator.of(context).pushReplacementNamed('/home');
-          }
-        } else if (index == 1) {
-          Navigator.of(context).pushReplacementNamed('/add_campaign');
-        } else if (index == 2) {
-          Navigator.of(context).pushReplacementNamed('/notifications');
-        } else if (index == 3) {
-          Navigator.of(context)
-              .pushReplacementNamed('/profile', arguments: {'user': userType});
-        }
+        onTap(index);
       },
     );
   }

@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -30,8 +29,6 @@ class _LoginPageState extends State<LoginPage> {
         'senha': senha,
       });
 
-      print('Request Body: $body');
-
       final response = await http.post(
         Uri.parse('http://localhost:3001/api/usuario/login'),
         headers: <String, String>{
@@ -39,9 +36,6 @@ class _LoginPageState extends State<LoginPage> {
         },
         body: body,
       );
-
-      print('Status Code: ${response.statusCode}');
-      print('Response Body: ${response.body}');
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
@@ -51,7 +45,7 @@ class _LoginPageState extends State<LoginPage> {
         final isUserAdmin = user.name == 'admin';
         Navigator.of(context).pushReplacementNamed(
           isUserAdmin ? '/home_admin' : '/home',
-          arguments: {'user': user, 'userType': isUserAdmin ? 'admin' : ''},
+          arguments: {'user': user},
         );
       } else {
         AwesomeDialog(

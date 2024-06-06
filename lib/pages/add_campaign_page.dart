@@ -21,7 +21,7 @@ class _AddCampaignPageState extends State<AddCampaignPage> {
 
   Future<void> _pickImage() async {
     final XFile? pickedFile =
-        await _picker.pickImage(source: ImageSource.gallery);
+    await _picker.pickImage(source: ImageSource.gallery);
     setState(() {
       _imageFile = pickedFile;
     });
@@ -42,7 +42,7 @@ class _AddCampaignPageState extends State<AddCampaignPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomAppBar(
+      appBar: CustomAppBar(
         title: 'Adicionar Campanha',
         showBackButton: true,
       ),
@@ -97,7 +97,7 @@ class _AddCampaignPageState extends State<AddCampaignPage> {
         currentIndex: 1,
         onTap: (index) {
           if (index == 0) {
-            Navigator.of(context).pushReplacementNamed('/home');
+            Navigator.of(context).pushReplacementNamed('/home_admin');
           } else if (index == 2) {
             Navigator.of(context).pushReplacementNamed('/notifications');
           } else if (index == 3) {
