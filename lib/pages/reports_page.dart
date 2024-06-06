@@ -1,8 +1,6 @@
 import 'package:doasan/widgets/custom_app_bar.dart';
 import 'package:doasan/widgets/custom_bottom_nav_bar.dart';
 import 'package:flutter/material.dart';
-//import 'package:mongo_dart/mongo_dart.dart' as mongo;
-//import 'package:charts_flutter/flutter.dart' as charts;
 
 class ReportsPage extends StatelessWidget {
   const ReportsPage({super.key});
@@ -10,7 +8,7 @@ class ReportsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(
+      appBar: const CustomAppBar(
         title: 'Doasan - Sorocaba',
         //isAdmin: userType == 'admin',
       ),

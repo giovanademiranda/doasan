@@ -14,25 +14,42 @@ class CustomBottomNavBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    const List<BottomNavigationBarItem> adminItems = [
+      BottomNavigationBarItem(
+        icon: Icon(Icons.home),
+        label: 'Início',
+      ),
+      BottomNavigationBarItem(
+        icon: Icon(Icons.bar_chart),
+        label: 'Relatórios',
+      ),
+      BottomNavigationBarItem(
+        icon: Icon(Icons.person),
+        label: 'Perfil',
+      ),
+    ];
+
+    const List<BottomNavigationBarItem> userItems = [
+      BottomNavigationBarItem(
+        icon: Icon(Icons.home),
+        label: 'Início',
+      ),
+      BottomNavigationBarItem(
+        icon: Icon(Icons.add),
+        label: 'Agendar',
+      ),
+      BottomNavigationBarItem(
+        icon: Icon(Icons.notifications),
+        label: 'Notificações',
+      ),
+      BottomNavigationBarItem(
+        icon: Icon(Icons.person),
+        label: 'Perfil',
+      ),
+    ];
+
     return BottomNavigationBar(
-      items: const [
-        BottomNavigationBarItem(
-          icon: Icon(Icons.home),
-          label: 'Início',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.add),
-          label: 'Agendar',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.notifications),
-          label: 'Notificações',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.person),
-          label: 'Perfil',
-        ),
-      ],
+      items: userType == 'admin' ? adminItems : userItems,
       currentIndex: currentIndex,
       selectedItemColor: const Color(0xFFFF3737),
       unselectedItemColor: Colors.grey,

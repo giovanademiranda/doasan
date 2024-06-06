@@ -1,6 +1,7 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'dart:convert';
 
 import '../widgets/custom_app_bar.dart';
 import '../widgets/custom_bottom_nav_bar.dart';
@@ -10,8 +11,6 @@ class ScheduleScreen extends StatefulWidget {
   final String doadorId;
 
   const ScheduleScreen({super.key, required this.doadorId});
-
-  get user => null;
 
   @override
   _ScheduleScreenState createState() => _ScheduleScreenState();
@@ -33,7 +32,8 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
 
   Future<void> _scheduleDonation() async {
     if (_formKey.currentState!.validate()) {
-      final url = 'http://localhost:3001/api/agendamento/create/${widget.doadorId}';
+      final url =
+          'http://localhost:3001/api/agendamento/create/${widget.doadorId}';
       final headers = {'Content-Type': 'application/json'};
       final body = jsonEncode({
         'data_doacao': _dateController.text,
@@ -42,14 +42,18 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
       });
 
       try {
-        final response = await http.post(Uri.parse(url), headers: headers, body: body);
+        final response =
+            await http.post(Uri.parse(url), headers: headers, body: body);
         if (response.statusCode == 200) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Agendamento realizado com sucesso!')),
           );
         } else {
+          final responseBody = jsonDecode(response.body);
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Erro ao realizar agendamento.')),
+            SnackBar(
+                content: Text(
+                    'Erro ao realizar agendamento: ${responseBody['message']}')),
           );
         }
       } catch (e) {
@@ -124,9 +128,11 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                     onPressed: _scheduleDonation,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFFFF3737),
-                      padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 32.0),
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 16.0, horizontal: 32.0),
                     ),
-                    child: const Text('Feito', style: TextStyle(color: Colors.white)),
+                    child: const Text('Feito',
+                        style: TextStyle(color: Colors.white)),
                   ),
                 ],
               ),
@@ -140,11 +146,12 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
           if (index == 0) {
             Navigator.of(context).pushReplacementNamed('/home');
           } else if (index == 1) {
-            Navigator.of(context).pushReplacementNamed('/schedule', arguments: {'doadorId': widget.doadorId});
+            Navigator.of(context).pushReplacementNamed('/schedule',
+                arguments: {'doadorId': widget.doadorId});
           } else if (index == 2) {
             Navigator.of(context).pushReplacementNamed('/notifications');
           } else if (index == 3) {
-            Navigator.of(context).pushReplacementNamed('/profile', arguments: {'user': widget.user});
+            Navigator.of(context).pushReplacementNamed('/profile');
           }
         },
         userType: 'user',

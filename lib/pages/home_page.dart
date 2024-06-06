@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../data/mock_data.dart';
 import '../data/post_model.dart';
 import '../data/user_model.dart';
@@ -6,9 +7,9 @@ import '../widgets/custom_app_bar.dart';
 import '../widgets/custom_bottom_nav_bar.dart';
 
 class HomePage extends StatelessWidget {
-  final User? user;
+  final User user;
 
-  const HomePage({super.key, this.user});
+  const HomePage({super.key, required this.user});
 
   Future<List<Post>> fetchPosts() async {
     await Future.delayed(const Duration(seconds: 2));
@@ -95,13 +96,16 @@ class HomePage extends StatelessWidget {
         currentIndex: 0,
         onTap: (index) {
           if (index == 0) {
-            Navigator.of(context).pushReplacementNamed('/home');
+            Navigator.of(context)
+                .pushReplacementNamed('/home', arguments: {'user': user});
           } else if (index == 1) {
-            Navigator.of(context).pushReplacementNamed('/schedule', arguments: {'doadorId': 'ID_DOADOR'});
+            Navigator.of(context).pushReplacementNamed('/schedule',
+                arguments: {'doadorId': 'ID_DOADOR'});
           } else if (index == 2) {
             Navigator.of(context).pushReplacementNamed('/notifications');
           } else if (index == 3) {
-            Navigator.of(context).pushReplacementNamed('/profile', arguments: {'user': user});
+            Navigator.of(context)
+                .pushReplacementNamed('/profile', arguments: {'user': user});
           }
         },
         userType: 'user',
