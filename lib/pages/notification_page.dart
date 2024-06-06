@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 import '../data/mock_data.dart' as mockData;
 import '../data/notification_model.dart' as customNotification;
 import '../widgets/custom_app_bar.dart';
-import '../widgets/custom_bottom_nav_bar.dart';
-
 class NotificationsPage extends StatefulWidget {
   const NotificationsPage({super.key});
 
@@ -13,7 +11,6 @@ class NotificationsPage extends StatefulWidget {
 }
 
 class _NotificationScreenState extends State<NotificationsPage> {
-  int _currentIndex = 2;
   final String userType = 'user';
   Future<List<customNotification.Notification>> fetchNotifications() async {
     await Future.delayed(const Duration(seconds: 2));
