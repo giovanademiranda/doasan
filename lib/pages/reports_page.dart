@@ -1,6 +1,8 @@
 import 'package:doasan/widgets/custom_app_bar.dart';
 import 'package:doasan/widgets/custom_bottom_nav_bar.dart';
 import 'package:flutter/material.dart';
+//import 'package:mongo_dart/mongo_dart.dart' as mongo;
+//import 'package:charts_flutter/flutter.dart' as charts;
 
 class ReportsPage extends StatelessWidget {
   const ReportsPage({super.key});
@@ -87,6 +89,40 @@ class _PaginaSelecaoIntervaloDatasState
       });
   }
 
+  // Future<Map<String, int>> _obterDadosDoacoes() async {
+  //   final db = await mongo.Db.create("mongodb://localhost:27017/hemocentro");
+  //   await db.open();
+
+  //   final collection = db.collection('agendamento');
+  //   final pipeline = [
+  //     {
+  //       '\$match': {
+  //         'data_doacao': {
+  //           '\$gte': _dataInicio,
+  //           '\$lte': _dataFim,
+  //         }
+  //       }
+  //     },
+  //     {
+  //       '\$group': {
+  //         '_id': '\$tipo_sanguineo',
+  //         'count': {'\$sum': 1}
+  //       }
+  //     }
+  //   ];
+
+  //   final result = await collection.aggregate(pipeline);
+
+  //   await db.close();
+
+  //   final Map<String, int> doacoesPorTipo = {};
+  //   for (var doc in result) {
+  //     doacoesPorTipo[doc['_id']] = doc['count'];
+  //   }
+
+  //   return doacoesPorTipo;
+  // }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -122,3 +158,46 @@ class _PaginaSelecaoIntervaloDatasState
     );
   }
 }
+
+// class GraficoDoacoes extends StatelessWidget {
+//   final Map<String, int> doacoes;
+
+//   GraficoDoacoes({required this.doacoes});
+
+//   @override
+//   Widget build(BuildContext context) {
+//     List<charts.Series<Doacao, String>> series = [
+//       charts.Series(
+//         id: "Doacoes",
+//         data: doacoes.entries
+//             .map((entry) => Doacao(tipo: entry.key, quantidade: entry.value))
+//             .toList(),
+//         domainFn: (Doacao doacao, _) => doacao.tipo,
+//         measureFn: (Doacao doacao, _) => doacao.quantidade,
+//         colorFn: (_, __) => charts.MaterialPalette.red.shadeDefault,
+//       )
+//     ];
+
+//     return Scaffold(
+//       appBar: AppBar(
+//         title: Text('Gráfico de Doações por Tipo Sanguíneo'),
+//       ),
+//       body: Center(
+//         child: Padding(
+//           padding: const EdgeInsets.all(16.0),
+//           child: charts.BarChart(
+//             series,
+//             animate: true,
+//           ),
+//         ),
+//       ),
+//     );
+//   }
+// }
+
+// class Doacao {
+//   final String tipo;
+//   final int quantidade;
+
+//   Doacao({required this.tipo, required this.quantidade});
+// }
