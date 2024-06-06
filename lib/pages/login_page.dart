@@ -1,74 +1,41 @@
-import 'dart:convert';
-import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-
-import '../data/user_model.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import '../services/login_service.dart';
 import '../widgets/custom_text_field.dart';
 import '../widgets/password_field.dart';
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+class LoginScreen extends StatelessWidget {
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
 
-  @override
-  _LoginPageState createState() => _LoginPageState();
-}
+  LoginScreen({super.key});
 
-class _LoginPageState extends State<LoginPage> {
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
-
-  Future<void> _loginValidate() async {
-    final email = _emailController.text;
-    final senha = _passwordController.text;
+  Future<void> _login(BuildContext context) async {
+    String email = emailController.text;
+    String senha = passwordController.text;
 
     try {
-      final body = jsonEncode(<String, String>{
-        'email': email,
-        'senha': senha,
-      });
+      var response = await LoginService().login(email, senha);
+      print('Response: $response');
 
-      final response = await http.post(
-        Uri.parse('http://localhost:3001/api/usuario/login'),
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
-        },
-        body: body,
-      );
+      if (response['success']) {
+        String userId = response['userId'];
+        print('User ID: $userId');
 
-      if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
-        final userJson = data['usuario'];
-        final user = User.fromJson(userJson);
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        await prefs.setString('userId', userId);
 
-        final isUserAdmin = user.name == 'admin';
-        Navigator.of(context).pushReplacementNamed(
-          isUserAdmin ? '/home_admin' : '/home',
-          arguments: {'user': user},
-        );
+        print('Navigating to Home');
+        Navigator.of(context).pushReplacementNamed('/home');
       } else {
-        AwesomeDialog(
-          context: context,
-          dialogType: DialogType.error,
-          animType: AnimType.topSlide,
-          title: 'Erro',
-          desc: 'Credenciais inválidas. Por favor, tente novamente.',
-          btnOkOnPress: () {},
-          btnOkColor: Colors.red,
-        ).show();
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Falha ao fazer login: ${response['message']}')),
+        );
       }
     } catch (e) {
-      print('Error: $e');
-      AwesomeDialog(
-        context: context,
-        dialogType: DialogType.error,
-        animType: AnimType.topSlide,
-        title: 'Erro',
-        desc: 'Ocorreu um erro. Por favor, tente novamente.',
-        btnOkOnPress: () {},
-        btnOkColor: Colors.red,
-      ).show();
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Falha ao fazer login: $e')),
+      );
     }
   }
 
@@ -118,7 +85,6 @@ class _LoginPageState extends State<LoginPage> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 30),
               child: Form(
-                key: _formKey,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -133,7 +99,7 @@ class _LoginPageState extends State<LoginPage> {
                     const SizedBox(height: 10),
                     CustomTextField(
                       hintText: 'exemplo@gmail.com',
-                      controller: _emailController,
+                      controller: emailController,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Por favor, insira seu e-mail';
@@ -156,7 +122,7 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     const SizedBox(height: 10),
                     PasswordField(
-                      controller: _passwordController,
+                      controller: passwordController,
                       hintText: 'Digite sua senha',
                       validator: (value) {
                         if (value == null || value.isEmpty) {
@@ -168,11 +134,7 @@ class _LoginPageState extends State<LoginPage> {
                     const SizedBox(height: 30),
                     Center(
                       child: ElevatedButton(
-                        onPressed: () {
-                          if (_formKey.currentState?.validate() ?? false) {
-                            _loginValidate();
-                          }
-                        },
+                        onPressed: () => _login(context),
                         style: ElevatedButton.styleFrom(
                           foregroundColor: Colors.white,
                           backgroundColor: const Color(0xFFFF3737),
@@ -196,9 +158,9 @@ class _LoginPageState extends State<LoginPage> {
             ),
             const SizedBox(height: 20),
             Center(
-              child: ElevatedButton(
+              child: TextButton(
                 onPressed: () {
-                  Navigator.of(context).pushNamed('/cadastro');
+                  Navigator.of(context).pushNamed('/signup');
                 },
                 child: const Text(
                   'Crie uma conta!',

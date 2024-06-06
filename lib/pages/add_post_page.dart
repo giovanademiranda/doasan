@@ -1,9 +1,9 @@
 import 'dart:io';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-
+import 'package:shared_preferences/shared_preferences.dart';
+import '../services/post_service.dart';
 import '../widgets/custom_app_bar.dart';
 import '../widgets/custom_bottom_nav_bar.dart';
 
@@ -39,10 +39,46 @@ class _AddCampaignPageState extends State<AddCampaignPage> {
     }
   }
 
+  Future<void> _submitCampaign() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? userId = prefs.getString('userId');
+
+    if (userId == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Erro: Usuário não autenticado')),
+      );
+      return;
+    }
+
+    if (_descriptionController.text.isEmpty || _imageFile == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Por favor, preencha todos os campos')),
+      );
+      return;
+    }
+
+    final response = await CampaignService().createCampaign(
+      userId,
+      _descriptionController.text,
+      _imageFile!,
+    );
+
+    if (response['success']) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Campanha criada com sucesso!')),
+      );
+      Navigator.of(context).pushReplacementNamed('/home');
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Erro ao criar campanha: ${response['message']}')),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(
+      appBar: const CustomAppBar(
         title: 'Adicionar Campanha',
         showBackButton: true,
       ),
@@ -51,9 +87,11 @@ class _AddCampaignPageState extends State<AddCampaignPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            const Text(
-              'Descrição da campanha',
-              style: TextStyle(fontSize: 20.0),
+            const Center(
+              child: Text(
+                'Descrição da campanha',
+                style: TextStyle(fontSize: 20.0),
+              ),
             ),
             const SizedBox(height: 8.0),
             TextField(
@@ -73,7 +111,7 @@ class _AddCampaignPageState extends State<AddCampaignPage> {
             _displaySelectedImage(),
             const SizedBox(height: 24.0),
             ElevatedButton(
-              onPressed: () {},
+              onPressed: _submitCampaign,
               style: ElevatedButton.styleFrom(
                 foregroundColor: Colors.white,
                 backgroundColor: const Color(0xFFFF3737),
@@ -97,14 +135,13 @@ class _AddCampaignPageState extends State<AddCampaignPage> {
         currentIndex: 1,
         onTap: (index) {
           if (index == 0) {
-            Navigator.of(context).pushReplacementNamed('/home_admin');
+            Navigator.of(context).pushReplacementNamed('/home');
           } else if (index == 2) {
             Navigator.of(context).pushReplacementNamed('/notifications');
           } else if (index == 3) {
             Navigator.of(context).pushReplacementNamed('/profile');
           }
         },
-        userType: 'admin',
       ),
     );
   }

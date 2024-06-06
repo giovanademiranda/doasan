@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-
-import '../data/mock_data.dart' as mockData;
-import '../data/notification_model.dart' as customNotification;
+import '../services/notification_service.dart';
 import '../widgets/custom_app_bar.dart';
+import '../widgets/custom_bottom_nav_bar.dart';
+
 class NotificationsPage extends StatefulWidget {
   const NotificationsPage({super.key});
 
@@ -11,10 +11,12 @@ class NotificationsPage extends StatefulWidget {
 }
 
 class _NotificationScreenState extends State<NotificationsPage> {
-  final String userType = 'user';
-  Future<List<customNotification.Notification>> fetchNotifications() async {
-    await Future.delayed(const Duration(seconds: 2));
-    return mockData.mockNotifications;
+  late Future<List<UserNotification>> notificationsFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    notificationsFuture = NotificationService().fetchNotifications();
   }
 
   @override
@@ -39,8 +41,8 @@ class _NotificationScreenState extends State<NotificationsPage> {
             ),
             const SizedBox(height: 16),
             Expanded(
-              child: FutureBuilder<List<customNotification.Notification>>(
-                future: fetchNotifications(),
+              child: FutureBuilder<List<UserNotification>>(
+                future: notificationsFuture,
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return const Center(child: CircularProgressIndicator());
@@ -94,7 +96,20 @@ class _NotificationScreenState extends State<NotificationsPage> {
           ],
         ),
       ),
-
+      bottomNavigationBar: CustomBottomNavBar(
+        currentIndex: 2,
+        onTap: (index) {
+          if (index == 0) {
+            Navigator.of(context).pushReplacementNamed('/home');
+          } else if (index == 1) {
+            Navigator.of(context).pushReplacementNamed('/schedule');
+          } else if (index == 2) {
+            Navigator.of(context).pushReplacementNamed('/notifications');
+          } else if (index == 3) {
+            Navigator.of(context).pushReplacementNamed('/profile');
+          }
+        },
+      ),
     );
   }
 }

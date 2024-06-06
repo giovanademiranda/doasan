@@ -2,13 +2,11 @@ import 'package:flutter/material.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
-  final bool isAdmin;
   final bool showBackButton;
 
   const CustomAppBar({
     super.key,
     required this.title,
-    this.isAdmin = false,
     this.showBackButton = false,
   });
 
