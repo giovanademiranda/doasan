@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_masked_text2/flutter_masked_text2.dart';
 import 'package:intl/intl.dart';
-import 'package:charts_flutter/flutter.dart' as charts;
 import '../services/reports_service.dart';
 import '../widgets/custom_app_bar.dart';
 import '../widgets/custom_bottom_nav_bar.dart';
@@ -50,31 +49,6 @@ class _ReportScreenState extends State<ReportScreen> {
     }
   }
 
-  List<charts.Series<MapEntry<String, int>, String>> _createSeries() {
-    if (_reportData == null) {
-      return [];
-    }
-
-    final data = _reportData!.entries.toList();
-
-    return [
-      charts.Series<MapEntry<String, int>, String>(
-        id: 'BloodTypes',
-        colorFn: (_, __) => charts.MaterialPalette.red.shadeDefault,
-        domainFn: (MapEntry<String, int> entry, _) => entry.key,
-        measureFn: (MapEntry<String, int> entry, _) => entry.value,
-        data: data,
-      )
-    ];
-  }
-
-  Widget _buildBarChart() {
-    return charts.BarChart(
-      _createSeries(),
-      animate: true,
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -88,14 +62,12 @@ class _ReportScreenState extends State<ReportScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Center(
-              child: Text(
+              const Text(
                 'Gerar Relatório de Agendamentos',
                 style: TextStyle(
-                  fontSize: 20,
+                  fontSize: 24,
                   fontWeight: FontWeight.bold,
                 ),
-              ),
               ),
               const SizedBox(height: 16),
               const Text(
@@ -162,7 +134,17 @@ class _ReportScreenState extends State<ReportScreen> {
               ),
               const SizedBox(height: 24),
               _reportData != null
-                  ? Expanded(child: _buildBarChart())
+                  ? Expanded(
+                child: ListView.builder(
+                  itemCount: _reportData!.length,
+                  itemBuilder: (context, index) {
+                    String key = _reportData!.keys.elementAt(index);
+                    return ListTile(
+                      title: Text('$key: ${_reportData![key]}'),
+                    );
+                  },
+                ),
+              )
                   : const Text('Nenhum relatório gerado'),
             ],
           ),

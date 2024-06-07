@@ -40,13 +40,13 @@ class HomeScreen extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             const Center(
-            child: Text(
-              'Campanhas de Doação de Sangue',
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
+              child: Text(
+                'Campanhas de Doação de Sangue',
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
-            ),
             ),
             const SizedBox(height: 16),
             FutureBuilder<List<Campaign>>(

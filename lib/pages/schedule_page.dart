@@ -84,13 +84,13 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Center(
-              child: Text(
-                'Agendamento de Doação',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
+                child: Text(
+                  'Agendamento de Doação',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
-              ),
               ),
               const SizedBox(height: 16),
               const Text(
